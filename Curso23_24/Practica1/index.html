@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h2>Rellena tu CV</h2>
+    <form action="recogida.php" method="post" enctype="multipart/form-data"> <!-- Cuando hay archivos a mandar y/o contraseña se pone post-->
+
+        <p>
+            <label for="nombre">Nombre</label><br/>
+            <input type="text" id="nombre" name="nombre"/> <!-- El name es fundamental porque si no no mandas nada -->
+        </p>
+        
+        <p>
+            <label for="apellidos">Apellidos</label><br/>
+            <input type="text" id="apellidos" name="apellidos" size="50"/>
+        </p>
+        
+        <p>
+            <label for="contrasena">Contraseña</label><br/>
+            <input type="password" id="contrasena" name="contrasena"/>
+        </p>
+        
+        <p>
+            <label for="dni">DNI</label><br/>
+            <input type="text" id="dni" name="dni" size="10"/>
+        </p>
+        
+
+        <p>
+            Sexo <br/>
+            <input type="radio" id="hombre" name="sexo" value="hombre"/> <label for="hombre">Hombre</label><br/> <!-- Hay que poner value, si no pone sexo=on, para evitar estas cosas, probar antes con get -->
+            <input type="radio" id="mujer" name="sexo" value="mujer"/> <label for="mujer">Mujer</label><br/>
+        </p>
+        
+        <p><label for="foto">Incluir mi foto:</label> <input type="file" id="foto" accept="image/*"></p>
+
+        <p>Nacido en:
+            <select>
+                <option id="malaga">Málaga</option>
+                <option id="granada">Granada</option>
+                <option id="sevilla">Sevilla</option>
+            </select>
+        </p>
+
+        <p>
+            Comentarios: <textarea rows="5" cols="25"></textarea>
+        </p>
+
+        <p>
+            <input type="checkbox" id="suscrito"/>
+            <label for="suscrito">Subscribirse al boletín de novedades</label>
+        </p>
+
+        <p>
+            <input type="submit" name="btnGuardarCambios" value="Guardar cambios"/>
+            <button type="reset" name="resetear">Borrar los datos introducidos</button> <!-- Para poner el reset con botón en vez de input-->
+        </p>
+
+
+    </form>
+
+</body>
+</html>
