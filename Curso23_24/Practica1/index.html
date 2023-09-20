@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,30 +37,31 @@
             <input type="radio" id="mujer" name="sexo" value="mujer"/> <label for="mujer">Mujer</label><br/>
         </p>
         
-        <p><label for="foto">Incluir mi foto:</label> <input type="file" id="foto" accept="image/*"></p>
+        <p><label for="foto">Incluir mi foto:</label> 
+        <input type="file" id="foto" accept="image/*"></p>
 
-        <p>Nacido en:
-            <select>
-                <option id="malaga">Málaga</option>
-                <option id="granada">Granada</option>
-                <option id="sevilla">Sevilla</option>
+        <p><label for="nacido">Nacido en:</label>
+            <select id="nacido" name="nacido">
+                <option id="malaga" value="malaga">Málaga</option>
+                <option id="granada" value="granada" selected>Granada</option>
+                <option id="sevilla" value="sevilla">Sevilla</option>
             </select>
         </p>
 
         <p>
-            Comentarios: <textarea rows="5" cols="25"></textarea>
+            <label for="comentarios">Comentarios: </label>
+            <textarea id="comentarios" name="comentarios" rows="5" cols="25"></textarea>
         </p>
 
         <p>
-            <input type="checkbox" id="suscrito"/>
+            <input type="checkbox" name="suscrito" id="suscrito" checked/>
             <label for="suscrito">Subscribirse al boletín de novedades</label>
         </p>
 
         <p>
-            <input type="submit" name="btnGuardarCambios" value="Guardar cambios"/>
-            <button type="reset" name="resetear">Borrar los datos introducidos</button> <!-- Para poner el reset con botón en vez de input-->
-        </p>
-
+            <input type="submit" name="btnEnviar" value="Guardar cambios"/>
+            <button type="reset" name="btnReset">Borrar los datos introducidos</button> <!-- Para poner el reset con botón en vez de input-->
+        </p>        
 
     </form>
 

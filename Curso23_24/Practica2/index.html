@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi primera página PHP</title>
+</head>
+
+<body>
+
+    <h1>Esta es mi super página</h1>
+
+    <form action="recogida.php" method="post">
+        <p><label for="nombre">Nombre: </label><input type="text" id="nombre" name="nombre"></p>
+
+        <p><label for="nacido">Nacido en: </label>
+            <select name="nacido" id="nacido">
+                <option value="malaga" id="malaga">Málaga</option>
+                <option value="granada" id="granada">Granada</option>
+            </select>
+        </p>
+
+        <p><label for="sexo">Sexo: </label>
+            <label for="hombre">Hombre</label>
+            <input type="radio" id="hombre" name="sexo" value="hombre">
+            <label for="mujer">Mujer</label>
+            <input type="radio" id="mujer" name="sexo" value="mujer">
+        </p>
+
+        <p>
+            <label for="aficiones">Aficiones: </label>
+            <label for="deportes">Deportes</label>
+            <input type="checkbox" id="deportes">
+            <label for="lectura">Lectura</label>
+            <input type="checkbox" id="lectura">
+            <label for="otros">Otros</label>
+            <input type="checkbox" id="otros">
+        </p>
+
+        <p>
+            <label for="comentarios">Comentarios: </label>
+            <textarea name="comentarios" id="comentarios" cols="20" rows="3"></textarea>
+        </p>
+
+        <p>
+            <input type="submit" id="btnEnviar" name="btnEnviar" value="Enviar">
+        </p>
+    </form>
+
+
+
+</body>
+
+</html>
