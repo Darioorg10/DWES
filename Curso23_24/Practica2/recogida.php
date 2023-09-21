@@ -31,7 +31,11 @@ if (isset($_POST["btnEnviar"]))
         }    
 
         // Aficiones
-        
+        if (isset($_POST["aficiones"])) {
+            echo "<p>Tiene aficiones</p>";
+        } else {
+            echo "<p>No tiene aficiones</p>";
+        }
 
         // Comentarios
         echo "<p><strong>Comentarios: </strong>".$_POST["comentarios"]."</p>";
