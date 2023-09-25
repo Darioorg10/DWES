@@ -90,7 +90,7 @@
 
                         <p>
                             <input type="submit" name="btnEnviar" value="Guardar cambios"/>
-                            <button type="reset" name="btnReset">Borrar los datos introducidos</button> <!-- Para poner el reset con botón en vez de input-->
+                            <button type="submit" name="btnBorrar">Borrar los datos introducidos</button> <!-- Para poner el reset con botón en vez de input-->
                         </p>        
 
                     </form>

@@ -1,5 +1,15 @@
 <?php 
 
+    if (isset($_POST["btnBorrar"])) 
+    {
+        unset($_POST); // Quita los valores
+        
+        /* Otra opción sería (pero no es la recomendada): 
+            header("Location:index.php");
+            exit;
+        */
+    }
+
     if (isset($_POST["btnEnviar"])) // Vamos a hacer control de errores, por ejemplo suponiendo que que el nombre esté vacío es un error
     {
         $error_nombre = $_POST["nombre"] == "";
