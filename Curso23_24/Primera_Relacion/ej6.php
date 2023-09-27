@@ -9,7 +9,13 @@
     
     <?php 
     
-    echo "<h1>Ejercicio 6</h1>"
+    echo "<h1>Ejercicio 6</h1>";
+
+    $ciudades = array("Madrid", "Barcelona", "Londres", "New York", "Los Ángeles", "Chicago");
+
+    foreach ($ciudades as $key => $value) {
+        echo "La ciudad con el índice $key tiene el nombre $value. <br/>";
+    }
     
     
     ?>

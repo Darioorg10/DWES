@@ -13,8 +13,14 @@
 
     $a = array("Pedro", "Ismael", "Sonia", "Clara", "Susana",
     "Alfonso", "Teresa");
-    
-    
+
+    echo "El array contiene ".count($a)." elementos.";
+
+    echo "<ul>";
+    foreach ($a as $key => $value) {
+        echo "<li>$value</li>";
+    }
+    echo "</ul>";
     
     ?>
 
