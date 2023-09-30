@@ -30,24 +30,39 @@
     <h1 id="tit1">Ripios - Formulario</h1>
         <p>Dime dos palabras y te diré si riman o no.</p>
         <p><label for="pri">Primera palabra:</label>
-            <input type="text" name="pri" id="pri">            
+            <input type="text" name="pri" id="pri" value="<?php if(isset($_POST["btnEnviar"])) echo $_POST['pri']?>">            
             <span class="falloPri">
                 <?php 
-                    $err_pri_vacio = $_POST["pri"] == "";
-                    $err_pri_corto = strlen($_POST["pri"]) < 3;
-                    if (isset($_POST["btnEnviar"]) && $err_pri_vacio) {
-                        echo "Campo obligatorio";
+                    if (isset($_POST["btnEnviar"])) {
+                        $err_pri_vacio = $_POST["pri"] == "";
+                        $err_pri_corto = strlen($_POST["pri"]) < 3;
+                        if ($err_pri_vacio) {
+                            echo "Campo obligatorio";
+                        } else if ($err_pri_corto) {
+                            echo "La palabra debe tener al menos 3 carácteres";
+                        }
                     }
+                    
+                    
                 ?>
             </span>            
         </p>
         <p><label for="seg">Segunda palabra:</label>
-            <input type="text" name="seg" id="seg">
+            <input type="text" name="seg" id="seg" value="<?php if(isset($_POST["btnEnviar"])) echo $_POST['seg']?>">
             <span class="falloSeg">
-                <?php 
-                    $err_seg_vacio = $_POST["seg"] == "";        
-                    $err_seg_corto = strlen($_POST["seg"]) < 3;
-                    $err_form = $err_pri_corto || $err_pri_vacio || $err_seg_corto || $err_seg_vacio;
+                <?php
+                    if (isset($_POST["btnEnviar"])) {
+                        $err_seg_vacio = $_POST["seg"] == "";
+                        $err_seg_corto = strlen($_POST["seg"]) < 3;
+                        $err_form = $err_pri_corto || $err_pri_vacio || $err_seg_corto || $err_seg_vacio;
+                        if ($err_seg_vacio) {
+                            echo "Campo obligatorio";
+                        } else if ($err_seg_corto) {
+                            echo "La palabra debe tener al menos 3 carácteres";
+                        }
+                    }
+                                        
+                    
                 ?>
             </span>
         </p>
@@ -67,11 +82,20 @@
             <?php            
 
             $palabraBien1 = strtoupper(trim($_POST["pri"])); // Las ponemos sin espacio y mayúsculas
-            $palabraBien2 = strtoupper(trim($_POST["seg"]));                                    
+            $palabraBien2 = strtoupper(trim($_POST["seg"]));     
+            $palabraRegular1 = strtoupper(trim($_POST["pri"]));
+            $palabraRegular2 = strtoupper(trim($_POST["seg"]));                                 
 
+            // Si los 3 últimos carácteres son iguales
             if (substr($palabraBien1, -3) == substr($palabraBien2, -3)) {
                 echo "<p>Las palabras ".$_POST['pri']." y ".$_POST['seg']." riman</p>";
+            } else if (substr($palabraRegular1, -2) == substr($palabraRegular2, -2)) {
+                echo "<p>Las palabras ".$_POST['pri']." y ".$_POST['seg']." riman un poquito</p>";
+            } else {
+                echo "<p>Las palabras ".$_POST['pri']." y ".$_POST['seg']." no riman nada</p>";
             }
+
+
             ?>
             </div>
             <?php
