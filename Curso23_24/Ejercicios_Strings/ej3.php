@@ -39,9 +39,7 @@
                         if ($err_fra_vacia) {
                             echo "Campo obligatorio";
                         } else if ($err_fra_corta) {
-                            echo "La palabra o frase debe tener al menos 3 carácteres";
-                        } else if($err_no_string){
-                            echo "No es un string";
+                            echo "La frase debe tener al menos 3 carácteres";
                         }
                     }
                     
@@ -66,7 +64,8 @@
             
             <?php            
 
-            $palabraBien = strtoupper(trim($_POST["fra"])); // Las ponemos sin espacio y mayúsculas            
+            $palabraRegular = strtoupper(trim($_POST["fra"])); // Las ponemos sin espacio y mayúsculas
+            $palabraBien = str_replace(" ", "", $palabraRegular);            
 
             function esPalindroma($p){                
                 
@@ -79,9 +78,9 @@
             }            
             
             if (esPalindroma($palabraBien)) {
-                echo "<p>La palabra ".$_POST['fra']." es palíndroma</p>";
-            } else if (!esPalindroma($palabraBien)) {
-                echo "<p>La palabra ".$_POST['fra']." no es palíndroma</p>";
+                echo "<p>La frase ".$_POST['fra']." es palíndroma</p>";
+            } else {
+                echo "<p>La frase ".$_POST['fra']." no es palíndroma</p>";
             }
 
 
