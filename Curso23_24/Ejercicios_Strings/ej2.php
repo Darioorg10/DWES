@@ -32,8 +32,8 @@
             <span class="falloFra">
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
-                        $err_fra_vacia = $_POST["fra"] == "";
-                        $err_fra_corta = strlen($_POST["fra"]) < 3;                        
+                        $err_fra_vacia = trim($_POST["fra"]) == "";
+                        $err_fra_corta = strlen(trim($_POST["fra"])) < 3;                        
                         $err_form = $err_fra_vacia || $err_fra_corta;
                         if ($err_fra_vacia) {
                             echo "Campo obligatorio";
@@ -74,6 +74,25 @@
                 }
                 return true;
             }            
+
+            /* El profesor ha hecho para lo de palíndromo
+            
+            $i = 0;
+            $j = str_len($texto) - 1;
+            $bien = true;
+
+            while($i<$j && $bien){
+                if($texto_m[$i]==$texto_m[$j]){
+                    $i++;
+                    $j++;
+                } else {
+                    $bien = false;
+                }
+            }
+
+            Y ya, if($bien) y es númerico, te da que es capicúo, y si no es númerico pues es palíndromo
+
+            */
             
             if (is_numeric($palabraBien)) {
                 if (esPalindroma($palabraBien)) {

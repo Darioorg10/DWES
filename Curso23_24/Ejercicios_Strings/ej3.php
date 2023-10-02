@@ -32,9 +32,8 @@
             <span class="falloFra">
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
-                        $err_fra_vacia = $_POST["fra"] == "";
-                        $err_fra_corta = strlen($_POST["fra"]) < 3;
-                        $err_no_string = is_string($_POST["fra"]) == false;
+                        $err_fra_vacia = trim($_POST["fra"]) == "";
+                        $err_fra_corta = strlen(trim($_POST["fra"])) < 3;                        
                         $err_form = $err_fra_vacia || $err_fra_corta;
                         if ($err_fra_vacia) {
                             echo "Campo obligatorio";

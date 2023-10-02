@@ -18,28 +18,25 @@
 
     </style>
 </head>
-<body>
-    
-    <!-- No te va a responder hasta que pongas 3 caracteres -->
+<body>        
 
     <div class="formulario">
     
     <form action="ej7.php" method="post">
     <h1 id="tit1">Unifica separador decimal - Formulario</h1>
         <p>Escribe varios números separados por espacios y unificaré el separador decimal a puntos</p>
-        <p><label for="pri">Frase:</label>
+        <p><label for="pri">Número:</label>
             <input type="text" name="num" id="num" value="<?php if(isset($_POST["btnEnviar"])) echo $_POST['num']?>">            
             <span class="falloNum">
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
-                        $err_fra_vacia = $_POST["fra"] == "";
-                        $err_fra_corta = strlen($_POST["fra"]) < 3;
-                        $err_no_string = is_string($_POST["fra"]) == false;
-                        $err_form = $err_fra_vacia || $err_fra_corta;
-                        if ($err_fra_vacia) {
+                        $err_num_vacio = $_POST["num"] == "";
+                        $err_no_num = !is_float($_POST["num"]) || !is_numeric($_POST["num"]) || !is_int($_POST["num"]);                                                 
+                        $err_form = $err_num_vacio || $err_no_num;
+                        if ($err_num_vacio) {
                             echo "Campo obligatorio";
-                        } else if ($err_fra_corta) {
-                            echo "La frase debe tener al menos 3 carácteres";
+                        } else if ($err_no_num){
+                            echo "No has introducido un número";
                         }
                     }
                     
@@ -64,25 +61,14 @@
             
             <?php            
 
-            $palabraRegular = strtoupper(trim($_POST["fra"])); // Las ponemos sin espacio y mayúsculas
-            $palabraBien = str_replace(" ", "", $palabraRegular);            
+            $numRegular = trim($_POST["num"]); // Las ponemos sin espacio y mayúsculas
+            $numBien = str_replace(",", ".", $numRegular);            
 
-            function esPalindroma($p){                
-                
-                for ($i=0; $i < strlen($p)/2; $i++) {
-                    if ($p[$i] != $p[strlen($p) - 1 - $i]) { // Vamos mirando si la primera y la última posición son iguales
-                        return false;
-                    }
-                }
-                return true;
-            }            
-            
-            if (esPalindroma($palabraBien)) {
-                echo "<p>La frase ".$_POST['fra']." es palíndroma</p>";
-            } else {
-                echo "<p>La frase ".$_POST['fra']." no es palíndroma</p>";
-            }
+            echo "<p>Números originales</p>";
+            echo "<p>\t$numRegular</p>";
 
+            echo "<p>Números corregidos</p>";        
+            echo "<p>\t$numBien</p>";                        
 
             ?>
             </div>

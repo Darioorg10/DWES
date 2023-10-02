@@ -34,8 +34,8 @@
             <span class="falloPri">
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
-                        $err_pri_vacio = $_POST["pri"] == "";
-                        $err_pri_corto = strlen($_POST["pri"]) < 3;
+                        $err_pri_vacio = trim($_POST["pri"]) == ""; // También puedes poner todos los errores al principio del todo (antes del doctype) con un if isset del post
+                        $err_pri_corto = trim(strlen($_POST["pri"])) < 3;
                         if ($err_pri_vacio) {
                             echo "Campo obligatorio";
                         } else if ($err_pri_corto) {
@@ -52,8 +52,8 @@
             <span class="falloSeg">
                 <?php
                     if (isset($_POST["btnEnviar"])) {
-                        $err_seg_vacio = $_POST["seg"] == "";
-                        $err_seg_corto = strlen($_POST["seg"]) < 3;
+                        $err_seg_vacio = trim($_POST["seg"]) == "";
+                        $err_seg_corto = trim(strlen($_POST["seg"])) < 3;
                         $err_form = $err_pri_corto || $err_pri_vacio || $err_seg_corto || $err_seg_vacio;
                         if ($err_seg_vacio) {
                             echo "Campo obligatorio";
