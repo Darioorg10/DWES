@@ -1,62 +1,14 @@
 <?php
 
-const VALOR = array("M" => 1000, "D" => 500, "C" => 100, "L" => 50,
-"X" => 10, "V" => 5, "I" => 1);
-
-function letras_bien($texto){
-    $bien = true;
-    for ($i=0; $i < strlen($texto); $i++) {
-        if (!isset(VALOR[$texto[$i]])) { // Si no existe algo del texto en las constantes
-            $bien = false;
-            break;
-        }
-    }
-    return $bien;
-}
-
-function orden_bueno($texto){
-    $bien = true;
-    for ($i=0; $i < strlen($texto)-1; $i++) {
-        if(VALOR[$texto[$i]] < VALOR[$texto[$i+1]]){ // Tienen que ir en orden creciente
-            $bien = false;
-            break;
-        }
-    }
-    return $bien;
-}
-
-function repite_bien($texto){
-
-    $veces["I"] = 4;
-    $veces["V"] = 1;
-    $veces["X"] = 4;
-    $veces["L"] = 1;
-    $veces["C"] = 4;
-    $veces["D"] = 1;
-    $veces["M"] = 4;
-
-    $bien = true;
-    for ($i=0; $i < strlen($texto); $i++) {
-        $veces[$texto[$i]]--;
-        if ($veces[$texto[$i]] == -1) {
-            $bien = false;
-            break;
-        }
-    }
-    return $bien;
-}
-
-function es_romano($texto){
-
-
-    return letras_bien($texto) && orden_bueno($texto) && repite_bien($texto);
-}
-
 if (isset($_POST["btnEnviar"])) { // Comprobamos errores
-    $texto = trim($_POST["num"]);
-    $texto_m = strtoupper($texto);
 
-    $err_form = $texto == "" || !es_romano(strtoupper($texto_m));
+    $texto = trim($_POST["num"]);
+    $err_vacio = $texto == "";    
+    $err_num = !is_numeric($texto);
+    $err_negativo = $texto <= 0;
+    $err_grande = $texto >= 5000;
+
+    $err_form = $err_vacio || $err_num || $err_grande || $err_negativo;
     
 }
 ?>
@@ -95,8 +47,12 @@ if (isset($_POST["btnEnviar"])) { // Comprobamos errores
                     if (isset($_POST["btnEnviar"]) && $err_form) {
                         if ($texto == "") {
                             echo "Campo obligatorio";
+                        } else if($err_num){
+                            echo "No has escrito el número correctamente";
+                        } else if($err_grande){
+                            echo "El número no puede ser mayor a 5000";
                         } else {
-                            echo "No has escrito un número en cifras árabes correcto";
+                            echo "El número no puede ser negativo";
                         }
                     }
                 ?>
@@ -118,11 +74,37 @@ if (isset($_POST["btnEnviar"])) { // Comprobamos errores
                 <h1 id="tit2">árabes a romanos - Resultado</h1>
             
             <?php            
-                                    
-                $res = 0;
-                for ($i=0; $i < strlen($texto_m); $i++) {
-                    $res += VALOR[$texto_m[$i]];
+                               
+                
+                $res = "";
+                $num = $texto;
+                while ($num > 0) {
+                    if ($num >= 1000) {
+                        $num -= 1000;
+                        $res.="M";
+                    } else if($num >= 500){
+                        $num -= 500;
+                        $res.="D";
+                    } else if($num >= 100){
+                        $num -= 100;
+                        $res.="C";
+                    } else if($num >= 50){
+                        $num -= 50;
+                        $res.="L";
+                    } else if($num >= 10){
+                        $num -= 10;
+                        $res.="X";
+                    } else if($num >= 5){
+                        $num -= 5;
+                        $res.="V";
+                    } else if($num >= 1){
+                        $num -= 1;
+                        $res.="I";
+                    }
                 }
+                
+                
+
 
                 echo "<p>El número árabe: $texto pasado a números romanos es: $res</p>";
 
