@@ -1,4 +1,6 @@
-<?php 
+<?php     
+
+    require "src/funciones.php";
 
     if (isset($_POST["btnBorrar"])) 
     {
@@ -15,11 +17,12 @@
         $error_nombre = $_POST["nombre"] == "";
         $error_apellidos = $_POST["apellidos"] == "";
         $error_contrasena = $_POST["contrasena"] == "";
+        $error_dni = $_POST["dni"] == "" || !dni_bien_escrito(strtoupper($_POST["dni"])) || !dni_valido(strtoupper($_POST["dni"]));
         $error_sexo = !isset($_POST["sexo"]); // Si no se marca ni hombre ni mujer
         $error_comentarios = $_POST["comentarios"] == "";
 
-        $error_form = $error_nombre || $error_apellidos || $error_contrasena
-            || $error_sexo || $error_comentarios;                    
+        $error_form = $error_nombre || $error_apellidos || $error_contrasena || $error_dni
+        || $error_sexo || $error_comentarios;                    
 
     }        
 

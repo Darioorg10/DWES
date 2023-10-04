@@ -11,6 +11,7 @@
                 echo "<p><strong>Nombre: </strong>".$_POST["nombre"]."</p>";
                 echo "<p><strong>Apellido: </strong>".$_POST["apellidos"]."</p>";
                 echo "<p><strong>Contraseña: </strong>".$_POST["contrasena"]."</p>";
+                echo "<p><strong>DNI: </strong>".$_POST["dni"]."</p>";
 
                 if (isset($_POST["sexo"])) { // Se pueden ahorrar las llaves si solo hay un if else
                     echo "<p><strong>Sexo: </strong>".$_POST["sexo"]."</p>";

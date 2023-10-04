@@ -31,7 +31,7 @@
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
                         $err_num_vacio = $_POST["num"] == "";
-                        $err_no_num = !is_float($_POST["num"]) || !is_numeric($_POST["num"]) || !is_int($_POST["num"]);                                                 
+                        $err_no_num;                                                
                         $err_form = $err_num_vacio || $err_no_num;
                         if ($err_num_vacio) {
                             echo "Campo obligatorio";
@@ -61,7 +61,7 @@
             
             <?php            
 
-            $numRegular = trim($_POST["num"]); // Las ponemos sin espacio y mayúsculas
+            $numRegular = trim($_POST["num"]);
             $numBien = str_replace(",", ".", $numRegular);            
 
             echo "<p>Números originales</p>";
