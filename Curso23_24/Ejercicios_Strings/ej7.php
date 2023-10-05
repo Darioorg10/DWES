@@ -30,13 +30,10 @@
             <span class="falloNum">
                 <?php 
                     if (isset($_POST["btnEnviar"])) {
-                        $err_num_vacio = $_POST["num"] == "";
-                        $err_no_num;                                                
-                        $err_form = $err_num_vacio || $err_no_num;
+                        $err_num_vacio = $_POST["num"] == "";                                             
+                        $err_form = $err_num_vacio;
                         if ($err_num_vacio) {
                             echo "Campo obligatorio";
-                        } else if ($err_no_num){
-                            echo "No has introducido un número";
                         }
                     }
                     

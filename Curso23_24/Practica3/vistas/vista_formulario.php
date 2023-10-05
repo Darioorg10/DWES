@@ -83,7 +83,21 @@
         </p>
 
         <p><label for="foto">Incluir mi foto:</label>
-            <input type="file" name="foto" id="foto" accept="image/*">
+            <input type="file" name="archivo" id="archivo" accept="image/*">
+            <?php 
+                if (isset($_POST["btnEnviar"]) && $error_archivo) {
+                    if ($_FILES["archivo"]["name"] != "") // Solo me va a avisar de los errores si hemos seleccionado algo
+                    {
+                        if ($_FILES["archivo"]["error"]) {
+                            echo "<span class='error'>No se ha podido subir el archivo al servidor</span>";
+                        } else if (!getimagesize($_FILES["archivo"]["tmp_name"])) {
+                            echo "<span class='error'>No has seleccionado un archivo de tipo imagen</span>";
+                        } else {
+                            echo "<span class='error'>El archivo seleccionado supera los 500KB</span>";
+                        }
+                    }   
+                }
+            ?>
         </p>
 
         <p><label for="nacido">Nacido en:</label>
