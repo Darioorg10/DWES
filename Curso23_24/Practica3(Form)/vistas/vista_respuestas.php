@@ -52,9 +52,14 @@
                         echo "<p><img class='tam_imag' src='images/".$nombre_nuevo."' alt='Foto' title='Foto'/></p>";
                     } else {
                         echo "<p class='error'>No se ha podido mover la imagen a la carpeta destino en el servidor</p>";
-                    }         
-                }
-
+                    }                                        
+                } else {
+                    echo "<p><strong>Foto: </strong>Foto no seleccionada</p>";
+                } 
+                    
+                        
+                
+                
                 
 
                 ?>

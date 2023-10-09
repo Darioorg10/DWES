@@ -82,7 +82,7 @@
             <input type="radio" <?php if (isset($_POST["sexo"]) && $_POST["sexo"] == "mujer") echo "checked"; ?> id="mujer" name="sexo" value="mujer" /> <label for="mujer">Mujer</label><br />
         </p>
 
-        <p><label for="foto">Incluir mi foto:</label>
+        <p><label for="archivo">Incluir mi foto:</label>
             <input type="file" name="archivo" id="archivo" accept="image/*">
             <?php 
                 if (isset($_POST["btnEnviar"]) && $error_archivo) {
