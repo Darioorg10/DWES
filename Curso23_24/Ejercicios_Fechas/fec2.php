@@ -35,6 +35,7 @@
 
         .fondo_verdoso {
             background-color: lightgreen;
+            margin-top: 2em;
         }
 
         .centro {
@@ -59,7 +60,7 @@
                     <?php
                     for ($i = 1; $i < 32; $i++) {
                         if (isset($_POST["btnEnviar"]) && $_POST["dia1"] == $i) {
-                            printf("<option selected value='%02d'>%02d</option>", $i, $i);
+                            printf("<option selected value='%02d'>%02d</option>", $i, $i); // El formato queremos que sea 01, 02...
                         } else {
                             printf("<option value='%02d'>%02d</option>", $i, $i);
                         }
@@ -87,7 +88,8 @@
                 <label for="anyo1">Año:</label>
                 <select name="anyo1" id="anyo1">
                     <?php
-                    for ($i = 1973; $i <= 2023; $i++) {
+                    $anio_actual = date("Y"); // Cogemos el año en el que estamos
+                    for ($i = 1973; $i <= $anio_actual; $i++) {
                         if (isset($_POST["btnEnviar"]) && $_POST["anyo1"] == $i) {
                             echo "<option selected value='$i'>$i</option>";
                         } else {
@@ -166,6 +168,11 @@
 
         $tiempo1 = mktime(0, 0, 0, $_POST["mes1"], $_POST["dia1"], $_POST["anyo1"]);
         $tiempo2 = mktime(0, 0, 0, $_POST["mes2"], $_POST["dia2"], $_POST["anyo2"]);
+
+        /* 
+        $tiempo1 = strtotime($_POST["anio1"], $_POST["mes1"], $_POST["dia1"]);
+        $tiempo2 = strtotime($_POST["anio2"], $_POST["mes2"], $_POST["dia2"]);    
+        */
 
         $dif_segundos = abs($tiempo2 - $tiempo1);
         $dif_pasado = floor($dif_segundos/(60*60*24));        
