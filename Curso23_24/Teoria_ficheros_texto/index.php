@@ -37,7 +37,7 @@
 
         echo "<p>$linea</p>";
 
-        // Con esto nos vamos al principio
+        // Con esto nos vamos al principio (al byte 0)
         fseek($fd1, 0);
 
         echo "<h2>Recorremos con un while:</h2>";                
@@ -46,9 +46,18 @@
         }
 
 
-        fwrite($fd1, PHP_EOL."Texto puesto con fwrite"); // Es exactamente lo mismo que el fputs
+        fwrite($fd1, PHP_EOL."Texto puesto con fwrite"); // Es exactamente lo mismo que el fputs (nos pone el texto al final del documento)
 
         fclose($fd1); // Cuando terminemos de trabajar con el fichero debemos cerrarlo
+
+
+        echo "<h3>Todo el fichero:</h3>";
+        $todo_fichero = file_get_contents("prueba.txt");
+        echo "<pre>$todo_fichero</pre>"; // Con el pre se nos va a mostrar tal cual esté en el documento
+
+        // Podríamos coger todo el html de una página web
+        $fichero_web = file_get_contents("https://www.google.com");
+        echo $fichero_web;
 
     ?>
 </body>

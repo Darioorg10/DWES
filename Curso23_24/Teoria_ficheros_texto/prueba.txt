@@ -3,3 +3,9 @@ Esta es la segunda.
 Esta es la tercera.
 Y esta es la última línea.
 Texto puesto con fwrite
+Texto puesto con fwrite
+Texto puesto con fwrite
+Texto puesto con fwrite
+Texto puesto con fwrite
+Texto puesto con fwrite
+Texto puesto con fwrite
