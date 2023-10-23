@@ -1,9 +1,19 @@
+<?php 
+    function mi_strlen($texto){
+        $contador = 0;
+        while (isset($texto[$contador])) {
+            $contador++;
+        }
+        return $contador;
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicio1</title>
+    <title>Ejercicio 1</title>
     <style>
         .error{color: red}
     </style>
@@ -17,12 +27,7 @@
     </form>
     <?php 
         if (isset($_POST["btnEnviar"])) {
-            $contador = 0;
-            while (isset($_POST["texto"][$contador])) {
-                $contador++;
-            }
-
-            echo "El texto tiene $contador carácteres";
+            echo "El texto tiene ".mi_strlen($_POST['texto'])." carácteres";
         }
     ?>
 

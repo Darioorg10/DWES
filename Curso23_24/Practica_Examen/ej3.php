@@ -4,6 +4,25 @@
 
         $error_form = $error_vacio;
     }
+
+    function mi_strlen($texto){
+        $contador = 0;
+        while (isset($texto[$contador])) {
+            $contador++;
+        }
+        return $contador;
+    }
+
+    function mi_explode($separador, $texto){
+        $ind_sep = [];
+        for ($i=0; $i < mi_strlen($texto); $i++) {
+            if ($texto[$i] == $separador) {                
+                    $ind_sep[] = $i;                
+            }
+        }
+        return $ind_sep;
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +39,7 @@
     <h1>Ejercicio 3</h1>
     <form action="ej3.php" method="post">
         <label for="texto">Introduzca un texto:</label>
-        <input type="text" name="texto" id="texto">
+        <input type="text" name="texto" id="texto" value="<?php if(isset($_POST["texto"])) echo $_POST["texto"];?>">
         <?php 
             if (isset($_POST["btnEnviar"]) && $error_form) {
                 if ($error_vacio) {
@@ -34,6 +53,7 @@
             <option value=":">:</option>
             <option value=";">;</option>
             <option value=",">,</option>
+            <option value=" "> (espacio)</option>                        
         </select><br><br>
         <button type="submit" name="btnEnviar" id="btnEnviar">Enviar</button>
     </form>
@@ -41,7 +61,17 @@
 <?php 
     if (isset($_POST["btnEnviar"]) && !$error_form) {
         if ($_POST["separadorSel"] == ":") {            
-            
+            $modificado = mi_explode(":", $_POST["texto"]);            
+            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
+        } else if($_POST["separadorSel"] == ";"){
+            $modificado = mi_explode(";", $_POST["texto"]);            
+            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
+        } else if($_POST["separadorSel"] == ","){
+            $modificado = mi_explode(",", $_POST["texto"]);            
+            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
+        } else {
+            $modificado = mi_explode(" ", $_POST["texto"]);            
+            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
         }
     }
 ?>
