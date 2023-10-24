@@ -14,13 +14,35 @@
     }
 
     function mi_explode($separador, $texto){
-        $ind_sep = [];
-        for ($i=0; $i < mi_strlen($texto); $i++) {
-            if ($texto[$i] == $separador) {                
-                    $ind_sep[] = $i;                
+        // $aux = array(); Esto es lo mismo que $aux = [];
+        $aux = [];        
+        $longitud_texto = mi_strlen($texto);
+        $i = 0;
+        while ($i < $longitud_texto && $texto[$i] == $separador) { // Esto sirve para quitar los separadores si hay en el principio
+            $i++;
+        }
+
+        if ($i < $longitud_texto) { // Si ya viendo los separadores del principio no hemos terminado todavía
+            $j = 0;
+            $aux[$j] = $texto[$i];
+            for ($i=$i+1; $i < $longitud_texto; $i++) {
+                if ($texto[$i] != $separador) { // Si no es un separador le concatenamos la siguiente letra/carácter
+                    $aux[$j].=$texto[$i];
+                } else {
+                    while ($i < $longitud_texto && $texto[$i] == $separador) { // Si estamos en un separador vamos avanzado hasta que no sea un separador o hasta el final
+                        $i++;                        
+                    }
+
+                    if ($i < $longitud_texto) {
+                        $j++;    
+                        $aux[$j] = $texto[$i];
+                    }
+                    
+                }
             }
         }
-        return $ind_sep;
+
+        return $aux;
     }
 
 ?>
@@ -50,29 +72,18 @@
         <br><br>
         <label for="separadorSel">Elige el separador:</label>
         <select name="separadorSel" id="separadorSel">
-            <option value=":">:</option>
-            <option value=";">;</option>
-            <option value=",">,</option>
-            <option value=" "> (espacio)</option>                        
+            <option <?php if(isset($_POST["btnEnviar"]) && $_POST["separadorSel"] == ":") echo "selected";?> value=":">:</option>
+            <option <?php if(isset($_POST["btnEnviar"]) && $_POST["separadorSel"] == ";") echo "selected";?> value=";">;</option>
+            <option <?php if(isset($_POST["btnEnviar"]) && $_POST["separadorSel"] == ",") echo "selected";?> >,</option>
+            <option <?php if(isset($_POST["btnEnviar"]) && $_POST["separadorSel"] == " ") echo "selected";?> value=" "> (espacio)</option>                        
         </select><br><br>
         <button type="submit" name="btnEnviar" id="btnEnviar">Enviar</button>
     </form>
 </body>
 <?php 
     if (isset($_POST["btnEnviar"]) && !$error_form) {
-        if ($_POST["separadorSel"] == ":") {            
-            $modificado = mi_explode(":", $_POST["texto"]);            
-            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
-        } else if($_POST["separadorSel"] == ";"){
-            $modificado = mi_explode(";", $_POST["texto"]);            
-            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
-        } else if($_POST["separadorSel"] == ","){
-            $modificado = mi_explode(",", $_POST["texto"]);            
-            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
-        } else {
-            $modificado = mi_explode(" ", $_POST["texto"]);            
-            echo "<p>El texto tiene: ".(count($modificado)+1)." palabras</p>";
-        }
+        echo "<h2>Respuesta</h2>";
+        echo "<p>El número de palabras separadas por el separador seleccionado es de: ".count(mi_explode($_POST["separadorSel"], $_POST["texto"]))."</p>";
     }
 ?>
 </html>
