@@ -64,6 +64,22 @@ function mi_explode($separador, $texto){
         .text_centrado{
             text-align: center;
         }
+
+        table, th, td{
+            border: 1px solid black;
+        }
+
+        table{
+            border-collapse: collapse;
+            width: 90%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        th {
+            background-color: #CCC;
+        }
+
     </style>
 </head>
 
@@ -108,7 +124,14 @@ function mi_explode($separador, $texto){
                 $datos_linea = mi_explode("\t", $linea);
                 if (isset($_POST["btnVerHorario"]) && $_POST["profesor"] == $datos_linea[0]) {
                     $options .= "<option selected value='".$datos_linea[0]."'>".$datos_linea[0]."</option>";
-                    $datos_profesor_selec =  $datos_linea; // Ya tenemos directamente los datos del profesor
+                    $nombre_prof =  $datos_linea[0]; // Ya tenemos directamente los datos del profesor
+                    for ($i=1; $i < count($datos_linea); $i+=3) {
+                        if (isset($horario_profe[$datos_linea[$i]][$datos_linea[$i+1]])) {
+                            $horario_profe[$datos_linea[$i]][$datos_linea[$i+1]].="/".$datos_linea[$i+2]; // Esto es solo para concatenar si hay más de una clase en la misma hora                            
+                        } else {
+                            $horario_profe[$datos_linea[$i]][$datos_linea[$i+1]]= $datos_linea[$i+2];
+                        }
+                    }
                 } else {
                     $options .= "<option value='".$datos_linea[0]."'>".$datos_linea[0]."</option>";
                 }
@@ -130,7 +153,37 @@ function mi_explode($separador, $texto){
 
         <?php
         if (isset($_POST["btnVerHorario"])) {
-            echo "<h3 class='text_centrado'>Horario del profesor: ".$datos_profesor_selec[0]."</h3>";
+            echo "<h3 class='text_centrado'>Horario del profesor: ".$nombre_prof."</h3>";
+
+            $horas[1]="8:15-9:15";
+            $horas[]="9:15-10:15";
+            $horas[]="10:15-11:15";
+            $horas[]="11:15-11:45";
+            $horas[]="11:45-12:45";
+            $horas[]="12:45-13:45";
+            $horas[]="13:45-14:45";
+
+            echo "<table>";
+            echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th></tr>"; // Ponemos la primera fila con los días
+            for ($hora=1; $hora <= 7; $hora++) {
+                echo "<tr>";
+                echo "<th>".$horas[$hora]."</th>";
+                if ($hora == 4) { // En el recreo
+                    echo "<td colspan='5'>RECREO</td>";
+                } else {
+                    for ($dia=1; $dia <= 5; $dia++) {
+                        if (isset($horario_profe[$dia][$hora])) {
+                            echo "<td>".$horario_profe[$dia][$hora]."</td>";
+                        } else {
+                            echo "<td></td>";
+                        }
+                        
+                    }
+                }                
+                echo "</tr>";
+            }
+            echo "</table>";
+
         }
             fclose($fd);
         }    
