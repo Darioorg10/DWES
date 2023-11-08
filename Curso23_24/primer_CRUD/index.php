@@ -22,6 +22,13 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones
         header("Location:index.php");
         exit();
     }
+
+    if (isset($_POST["btnContEditar"])) {                        
+        $error_form = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 30 ||
+        $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 20 || strlen($_POST["clave"]) > 15 ||
+        $_POST["email"] == "" || strlen($_POST["email"]) > 50;
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -124,8 +131,58 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones
             echo "<form action='index.php' method='post'>";
             echo "<p><button type='submit' name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
             echo "<button type='submit'>Atrás</button></p>";
+            echo "</form>";
+
         } else if(isset($_POST["btnEditar"])){
-                    
+            echo "<h2>Editando el usuario ".$_POST["btnEditar"]."</h2>";
+            echo "<form action='index.php' method='post'>";
+
+            try {
+                $consulta = "select * from usuarios where id_usuario='".$_POST["btnEditar"]."'";
+                $resultado = mysqli_query($conexion, $consulta);            
+            } catch (Exception $e) {
+                mysqli_close($conexion); // Cerramos la conexión
+                die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");                            
+            }
+
+            // Comprobamos que exista
+            if (mysqli_num_rows($resultado) > 0) { // Si hemos obtenido alguna tupla
+                $datos_usuario = mysqli_fetch_assoc($resultado);                
+            } else {
+                $mensaje_error_usuario = "<p>El usuario seleccionado ya no está registrado en la BD</p>";
+            }     
+
+            if (isset($mensaje_error_usuario)) {
+                echo $mensaje_error_usuario;
+            } else {
+            ?>
+            <p>                
+                <label for="nombre">Nombre: </label>
+                <input type="text" name="nombre" id="nombre" value="<?php echo "".$datos_usuario["nombre"].""; ?>">
+                <?php 
+                    if (isset($_POST["btnContEditar"]) && $error_form) {
+                        if ($_POST["nombre"] == "") {
+                            echo "<span class='error'>*Campo obligatorio*</span>";
+                        }
+                    }
+                ?>
+            </p>
+            <p>                
+                <label for="usuario">Usuario: </label>
+                <input type="text" name="usuario" id="usuario" value="<?php echo "".$datos_usuario["usuario"].""; ?>">
+            </p>
+            <p>                
+                <label for="clave">Contraseña: </label>
+                <input type="text" name="clave" id="clave" placeholder="Editar contraseña">
+            </p>
+            <p>                
+                <label for="email">Email: </label>
+                <input type="text" name="email" id="email" value="<?php echo "".$datos_usuario["email"].""; ?>">
+            </p>
+            <?php
+            }                        
+            echo "<p><button type='submit' name='btnContEditar' value='".$_POST["btnEditar"]."'>Continuar</button>";
+            echo "<button type='submit'>Atrás</button></p>";
         } else {
             // Si le damos click a insertar que nos mande a la otra página
             echo "<form action='usuario_nuevo.php' method='post'>";
