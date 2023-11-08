@@ -1,3 +1,29 @@
+<?php
+
+require "src/constantes_funciones.php"; // Nos traemos las funciones
+
+    if(isset($_POST["btnContBorrar"])){
+        try {
+            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+            mysqli_set_charset($conexion, "utf8");
+        } catch (Exception $e) {
+            die(error_page("Práctica 1º CRUD", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
+        }
+        
+        try {            
+            $consulta = "delete from usuarios where id_usuario='".$_POST["btnContBorrar"]."'";
+            mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {            
+            mysqli_close($conexion); // Cerramos la conexión
+            die(error_page("Práctica 1º CRUD", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));                        
+        }
+        // Aquí no hace falta liberar la consulta porque no es un select
+        mysqli_close($conexion);
+        header("Location:index.php");
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -56,8 +82,8 @@
         while($tupla = mysqli_fetch_assoc($resultado)){
             echo "<tr>";
             echo "<td><form action='index.php' method='post'><button class='enlace' type='submit' name='btnDetalle' title='Listar usuario' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></form></td>"; // Le ponemos como valor la clave primaria para tenerlo como dato
-            echo "<td><form action='index.php' method='post'><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnBorrar'><img src='images/borrar.png' alt='Imagen de borrar' title='Borrar usuario'</button></form></td>"; // Hay que hacer un formulario por fila o botón para evitar errores
-            echo "<td><form action='index.php' method='post'><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnEditar'><img src='images/editar.png' alt='Imagen de editar' title='Editar usuario'</td>";
+            echo "<td><form action='index.php' method='post'><input type='hidden' name='nombre_usuario' value='".$tupla["nombre"]."'</input><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnBorrar'><img src='images/borrar.png' alt='Imagen de borrar' title='Borrar usuario'</button></form></td>"; // Hay que hacer un formulario por fila o botón para evitar errores
+            echo "<td><form action='index.php' method='post'><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnEditar'><img src='images/editar.png' alt='Imagen de editar' title='Editar usuario'</button></form></td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -94,7 +120,10 @@
             echo "</form>";            
 
         } else if(isset($_POST["btnBorrar"])){
-
+            echo "<p>Se dispone usted a borrar al usuario <strong>".$_POST["nombre_usuario"]."</strong></p>";
+            echo "<form action='index.php' method='post'>";
+            echo "<p><button type='submit' name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
+            echo "<button type='submit'>Atrás</button></p>";
         } else if(isset($_POST["btnEditar"])){
                     
         } else {
