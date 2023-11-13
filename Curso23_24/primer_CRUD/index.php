@@ -1,10 +1,10 @@
 <?php
 
-require "src/constantes_funciones.php"; // Nos traemos las funciones
+require "src/constantes_funciones.php"; // Nos traemos las funciones y las constantes
 
     if(isset($_POST["btnContBorrar"])){
         try {
-            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+            $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {
             die(error_page("Práctica 1º CRUD", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
@@ -24,9 +24,68 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones
     }
 
     if (isset($_POST["btnContEditar"])) {                        
-        $error_form = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 30 ||
-        $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 20 || strlen($_POST["clave"]) > 15 ||
-        $_POST["email"] == "" || strlen($_POST["email"]) > 50;
+        $error_nombre = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 30;
+        $error_usuario = $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 20;
+        if (!$error_usuario) {
+            try {
+                $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
+                mysqli_set_charset($conexion, "utf8");
+            } catch (Exception $e) {
+                die(error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
+            }
+
+            $error_usuario = repetido_editando($conexion, "usuarios", "usuario", $_POST["usuario"], "id_usuario", $_POST["btnContEditar"]);
+
+            if (is_string($error_usuario)) {                
+                die($error_usuario);
+            }       
+
+            $error_clave = strlen($_POST["clave"]) > 15;
+            $error_email = $_POST["email"] == "" || strlen($_POST["email"]) > 50 || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);            
+
+            if (!$error_email) {
+                if (!isset($conexion)) {
+                    try{
+                        $conexion=mysqli_connect(SERVIDOR_BD,USUARIO_BD,CLAVE_BD,NOMBRE_BD);
+                        mysqli_set_charset($conexion,"utf8");
+                    }
+                    catch(Exception $e)
+                    {
+                        die(error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No ha podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
+                    }
+                }
+            }
+
+            $error_email=repetido_editando($conexion,"usuarios","email",$_POST["email"],"id_usuario",$_POST["btnContEditar"]);
+
+            if (is_string($error_email)) {
+                die($error_email);
+            }
+
+            $error_form = $error_nombre || $error_usuario || $error_clave || $error_email;
+
+            if (!$error_form) {
+                try {
+                    if ($_POST["clave"] == "") {
+                        $consulta="update usuarios set nombre='".$_POST["nombre"]."', usuario='".$_POST["usuario"]."', email='".$_POST["email"]."' where id_usuario='".$_POST["btnContEditar"]."'";
+                    } else {
+                        $consulta="update usuarios set nombre='".$_POST["nombre"]."', usuario='".$_POST["usuario"]."', clave='".md5($_POST["clave"])."', email='".$_POST["email"]."' where id_usuario='".$_POST["btnContEditar"]."'";
+                    }
+
+                    mysqli_query($conexion, $consulta);                    
+
+                } catch (Exception $e) {
+                    mysqli_close($conexion);
+                    die(error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
+                }
+
+                mysqli_close($conexion);
+
+                header("Location:index.php");
+                exit;
+            }
+
+        }
     }
 
 ?>
@@ -63,134 +122,35 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones
             color: blue;
             text-decoration: underline;
         }
+
+        .error{
+            color:red
+        }
     </style>
 </head>
 <body>
     <h1>Listado de los usuarios</h1>
     <?php 
-        try {
-            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
-            mysqli_set_charset($conexion, "utf8");
-        } catch (Exception $e) {
-            die("<p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p></body></html>");
-        }                
-
-        try {
-            $consulta = "select * from usuarios";
-            $resultado = mysqli_query($conexion, $consulta);            
-        } catch (Exception $e) {
-            die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
-            mysqli_close($conexion); // Cerramos la conexión            
-        }
-
-        // Creamos la tabla
-        echo "<table>";
-        echo "<tr><th>Nombre de usuario</th><th>Borrar</th><th>Editar</th></tr>";
-        while($tupla = mysqli_fetch_assoc($resultado)){
-            echo "<tr>";
-            echo "<td><form action='index.php' method='post'><button class='enlace' type='submit' name='btnDetalle' title='Listar usuario' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></form></td>"; // Le ponemos como valor la clave primaria para tenerlo como dato
-            echo "<td><form action='index.php' method='post'><input type='hidden' name='nombre_usuario' value='".$tupla["nombre"]."'</input><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnBorrar'><img src='images/borrar.png' alt='Imagen de borrar' title='Borrar usuario'</button></form></td>"; // Hay que hacer un formulario por fila o botón para evitar errores
-            echo "<td><form action='index.php' method='post'><button class='enlace' type ='submit' value='".$tupla["id_usuario"]."' name='btnEditar'><img src='images/editar.png' alt='Imagen de editar' title='Editar usuario'</button></form></td>";
-            echo "</tr>";
-        }
-        echo "</table>";
+        require "vistas/vista_tabla.php";
 
         // Si se pulsa un nombre que nos de los datos
-        if (isset($_POST["btnDetalle"])) {
-            echo "<h3>Detalles del usuario con id: ".$_POST['btnDetalle']."</h3>";
-
-            // Hacemos la consulta
-            try {
-                $consulta = "select * from usuarios where id_usuario='".$_POST["btnDetalle"]."'";
-                $resultado = mysqli_query($conexion, $consulta);            
-            } catch (Exception $e) {
-                die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
-                mysqli_close($conexion); // Cerramos la conexión            
-            }
-
-            // Comprobamos que exista por si se borra un usuario
-            if (mysqli_num_rows($resultado) > 0) { // Si hemos obtenido alguna tupla
-                $datos_usuario = mysqli_fetch_assoc($resultado);
-
-                echo "<p>";
-                echo "<strong>Nombre: </strong>".$datos_usuario["nombre"]."<br>";
-                echo "<strong>Usuario: </strong>".$datos_usuario["usuario"]."<br>";
-                echo "<strong>Email: </strong>".$datos_usuario["email"]."<br>";
-                echo "</p>";
-            } else {
-                echo "<p>El usuario seleccionado ya no está registrado en la BD</p>";
-            }         
-            
-            // Botón para volver
-            echo "<form action='index.php' method='post'>";
-            echo "<p><button type='submit' name='btnVolver'>Volver</button></p>";
-            echo "</form>";            
-
-        } else if(isset($_POST["btnBorrar"])){
-            echo "<p>Se dispone usted a borrar al usuario <strong>".$_POST["nombre_usuario"]."</strong></p>";
-            echo "<form action='index.php' method='post'>";
-            echo "<p><button type='submit' name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
-            echo "<button type='submit'>Atrás</button></p>";
-            echo "</form>";
-
-        } else if(isset($_POST["btnEditar"])){
-            echo "<h2>Editando el usuario ".$_POST["btnEditar"]."</h2>";
-            echo "<form action='index.php' method='post'>";
-
-            try {
-                $consulta = "select * from usuarios where id_usuario='".$_POST["btnEditar"]."'";
-                $resultado = mysqli_query($conexion, $consulta);            
-            } catch (Exception $e) {
-                mysqli_close($conexion); // Cerramos la conexión
-                die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");                            
-            }
-
-            // Comprobamos que exista
-            if (mysqli_num_rows($resultado) > 0) { // Si hemos obtenido alguna tupla
-                $datos_usuario = mysqli_fetch_assoc($resultado);                
-            } else {
-                $mensaje_error_usuario = "<p>El usuario seleccionado ya no está registrado en la BD</p>";
-            }     
-
-            if (isset($mensaje_error_usuario)) {
-                echo $mensaje_error_usuario;
-            } else {
-            ?>
-            <p>                
-                <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" id="nombre" value="<?php echo "".$datos_usuario["nombre"].""; ?>">
-                <?php 
-                    if (isset($_POST["btnContEditar"]) && $error_form) {
-                        if ($_POST["nombre"] == "") {
-                            echo "<span class='error'>*Campo obligatorio*</span>";
-                        }
-                    }
-                ?>
-            </p>
-            <p>                
-                <label for="usuario">Usuario: </label>
-                <input type="text" name="usuario" id="usuario" value="<?php echo "".$datos_usuario["usuario"].""; ?>">
-            </p>
-            <p>                
-                <label for="clave">Contraseña: </label>
-                <input type="text" name="clave" id="clave" placeholder="Editar contraseña">
-            </p>
-            <p>                
-                <label for="email">Email: </label>
-                <input type="text" name="email" id="email" value="<?php echo "".$datos_usuario["email"].""; ?>">
-            </p>
-            <?php
-            }                        
-            echo "<p><button type='submit' name='btnContEditar' value='".$_POST["btnEditar"]."'>Continuar</button>";
-            echo "<button type='submit'>Atrás</button></p>";
-        } else {
-            // Si le damos click a insertar que nos mande a la otra página
-            echo "<form action='usuario_nuevo.php' method='post'>";
-            echo "<p><button type='submit' name='btnNuevoUsuario'>Insertar nuevo usuario</button></p>";
-            echo "</form>";
+        if (isset($_POST["btnDetalle"])) 
+        {
+            require "vistas/vista_detalle.php";
+        } 
+        else if(isset($_POST["btnBorrar"]))
+        {
+            require "vistas/vista_conf_borrar.php";
+        } 
+        else if(isset($_POST["btnEditar"]) || isset($_POST["btnContEditar"]))
+        {                        
+            require "vistas/vista_editar.php";
+        } 
+        else 
+        {
+            require "vistas/vista_nuevo.php";
         }                
-
-        mysqli_free_result($resultado); // Para liberar memoria
+        
         mysqli_close($conexion); // Cerramos la conexión
     ?>        
 </body>
