@@ -22,22 +22,14 @@ function error_page($title, $body){
     return $page;
 }
 
-function repetido($conexion, $tabla, $columna, $valor){
+function repetido($conexion, $tabla, $columna, $valor, $columna_clave=null, $valor_clave=null){
     try {
-        $consulta = "select * from $tabla where $columna='$valor'";
-        $resultado = mysqli_query($conexion, $consulta);
-        $respuesta = mysqli_num_rows($resultado) > 0; // Si el número de columnas obtenidas es mayor de 0 es que está repetido
-        mysqli_free_result($resultado);
-    } catch (Exception $e) {   
-        mysqli_close($conexion);
-        $respuesta = error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido hacer la consulta: ".$e->getMessage()."</p>");
-    }
-    return $respuesta;
-}
-
-function repetido_editando($conexion, $tabla, $columna, $valor, $columna_clave, $valor_clave){
-    try {
-        $consulta = "select * from $tabla where $columna='$valor' AND ".$columna_clave."<>'".$valor_clave."'";
+        if (isset($columna_clave)) {
+            $consulta = "select * from $tabla where $columna='$valor' AND ".$columna_clave."<>'".$valor_clave."'";
+        } else {
+            $consulta = "select * from $tabla where $columna='$valor'";
+        }
+        
         $resultado = mysqli_query($conexion, $consulta);
         $respuesta = mysqli_num_rows($resultado) > 0; // Si el número de columnas obtenidas es mayor de 0 es que está repetido
         mysqli_free_result($resultado);
