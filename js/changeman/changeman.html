@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<meta charset="UTF-8">
+<head>
+    <title>Creación de una lista de nodos</title>
+</head>
+<body>
+    <ol id="lista">
+        <li>Perico</li>
+        <li>Juanico</li>
+        <ul>
+            <li>Jose</li>
+            <ul>
+                <li>Roman</li>
+                <li>Marco</li>
+                <li>Rodrigo</li>
+            </ul>
+            <li>Jose</li>
+
+            <li>Lorenzo</li>
+            <ul>
+                <li>Dimas</li>
+                <li>Gestas</li>
+                <li>Malakatos</li>
+                <li>Jose</li>
+            </ul>
+        </ul>
+        <li>Sofoclis</li>
+    </ol>
+    <script>
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            /* Escribe aquí tu código */
+            let objJSON = this.responseText // responseText te trae los datos del JSON            
+            objJSON = JSON.parse(objJSON) // Lo parseamos
+            objJSON.map(e => console.log(e)) // Lo recorremos con un map
+            objJSON.map(e => changeMan(document.getElementById("lista"), e.NOMBREI, e.NOMBREF))
+        }
+        };
+        xhttp.open("GET", "data.json", true);
+        xhttp.send();
+
+        const changeMan = (nodo, nombreI, nombreF) => {
+            if(nodo.innerHTML.toUpperCase() == nombreI.toUpperCase()) nodo.innerHTML = nombreF;
+            for (let i = 0; i < nodo.children.length; i++) {                
+                changeMan(nodo.children[i], nombreI, nombreF)
+            }
+        }
+
+        // Para probar una función hacerlo primero fuera y luego lo metemos en lo de AJAX
+        // changeMan(document.getElementById("lista"), "SOFOCLIS", "ARISTIDES")
+
+    </script>
+</body>
+</html>
