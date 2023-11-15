@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN</title>
+    <title>LOGIN</title>    
+</head>
+<body>    
+    <label for="usuario">Introduzca usuario y password:</label><br>
+    <input type="text" name="usuario" id="usuario" placeholder="usuario"><br>
+    <input type="password" name="pwd" id="pwd" placeholder="password"><br>
+    <button type="submit" id="btnLogin" name="btnLogin" onclick="compruebaUsuario()">Log In</button>
+    <p id="resultado"></p>
     <script>
-        const compruebaUsuario = (usuario, pwd) => {                        
+        const compruebaUsuario = () => {
+            let usuario = document.getElementById("usuario").value;
+            let pwd = document.getElementById("pwd").value;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("resultado").innerHTML = this.responseText;
                 }
             };
-            xmlhttp.open("GET", "https://localhost/Proyectos/js/login/login.php?usuario=" + usuario, + "&pwd=" + pwd, true);
+            xmlhttp.open("GET", "http://localhost/Proyectos/js/login/login.php?usuario=" + usuario + "&pwd=" + pwd, true); // Con http da error        
             xmlhttp.send();
         }        
-    </script>
-</head>
-<body>
-    <form>
-        <label for="usuario">Introduzca usuario y password:</label><br>
-        <input type="text" name="usuario" id="usuario" placeholder="usuario"><br>
-        <input type="password" name="pwd" id="pwd" placeholder="password"><br>
-        <button type="submit" id="btnLogin" name="btnLogin" onclick="compruebaUsuario(document.getElementById('usuario').value, document.getElementById('pwd').value)">Log In</button>
-        <p id="resultado"></p>
-    </form>    
+    </script>  
 </body>
 </html>

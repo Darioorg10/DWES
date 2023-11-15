@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reyes godos localhost</title>
+</head>
+<body>
+    <ul id="padre">
+
+    </ul>
+    <script>
+        const sacarJSON = () => {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let godos = this.responseText // recogemos el json
+                    JSON.parse(godos) // parseamos el JSON
+                    return godos
+                }
+            };
+            xmlhttp.open("GET", "http://localhost/Proyectos/js/reyes_godos/godos.php", true);
+            xmlhttp.send();            
+        }        
+
+        const hacerLista = (nodoPadre, json) => {
+            
+        }
+        
+        // hacerLista(document.getElementById("padre"), sacarJSON())
+    </script>
+</body>
+</html>

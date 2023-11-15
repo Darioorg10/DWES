@@ -8,6 +8,5 @@ $resultado = "";
     } else {
         $resultado = "USUARIO VÁLIDO";
     }
-        echo $resultado;        
-           
+        echo $resultado;               
 ?>
