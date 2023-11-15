@@ -15,7 +15,8 @@
 
         table{
             border-collapse: collapse;
-            text-align: center;            
+            text-align: center;
+            width: 90%;
         }
 
         td{
@@ -29,7 +30,7 @@
         img{
             width: 50px;
             height: 50px;
-        }       
+        }               
         
         .enlace{
             border: none;
@@ -49,7 +50,7 @@
     <h3>Listado de los usuarios</h3>
     <?php     
 
-        // Mostramos la tabla        
+        // Mostramos la tabla conectandonos a la base de datos   
         require "vistas/vista_tabla.php";
         
         // Si se pulsa un nombre mostramos los datos
@@ -57,6 +58,8 @@
             require "vistas/vista_listar.php";
         } else if(isset($_POST["btnInsertar"])){                                  
             require "vistas/vista_insertar.php";
+        } else if(isset($_POST["btnBorrar"])){
+            require "vistas/vista_borrar.php";
         }
 
         mysqli_close($conexion);

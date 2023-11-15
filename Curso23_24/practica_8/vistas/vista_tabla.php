@@ -26,7 +26,7 @@
     while ($tupla = mysqli_fetch_assoc($resultado)) {
         echo "<tr>"; // Hacemos un formulario por fila para evitar errores    
         echo "<td>".$tupla['id_usuario']."</td>";
-        echo "<td>".$tupla['foto']."</td>";
+        echo "<td><img src='Img/".$tupla['foto']."' alt='Foto de Perfil' title='Foto de Perfil'</td>";
         echo "<td><form action='index.php' method='post'><button class='enlace' name='btnListar' value='".$tupla['id_usuario']."'>".$tupla['nombre']."</button></form></td>"; // Le pasamos el id como value para tenerlo como dato
         echo "<td><form action='index.php' method='post'><button class='enlace' name='btnBorrar' value='".$tupla['id_usuario']."'>Borrar</button> - <button class='enlace' name='btnEditar' value='".$tupla['id_usuario']."'>Editar</button></form></td>";
         echo "</tr>";

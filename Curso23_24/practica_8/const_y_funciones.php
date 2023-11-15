@@ -15,4 +15,22 @@
         ';
         return $page;
     }
+
+    function repetido($conexion, $tabla, $columna, $valor, $columna_clave=null, $valor_clave=null){
+        try {
+            if (isset($columna_clave)) {
+                $consulta = "select * from $tabla where $columna='$valor' AND ".$columna_clave."<>'".$valor_clave."'";
+            } else {
+                $consulta = "select * from $tabla where $columna='$valor'";
+            }
+            
+            $resultado = mysqli_query($conexion, $consulta);
+            $respuesta = mysqli_num_rows($resultado) > 0; // Si el número de columnas obtenidas es mayor de 0 es que está repetido
+            mysqli_free_result($resultado);
+        } catch (Exception $e) {
+            mysqli_close($conexion);
+            $respuesta = $e->getMessage();
+        }
+        return $respuesta;
+    }
 ?>
