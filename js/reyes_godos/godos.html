@@ -10,24 +10,42 @@
 
     </ul>
     <script>
-        const sacarJSON = () => {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    let godos = this.responseText // recogemos el json
-                    JSON.parse(godos) // parseamos el JSON
-                    return godos
-                }
-            };
-            xmlhttp.open("GET", "http://localhost/Proyectos/js/reyes_godos/godos.php", true);
-            xmlhttp.send();            
-        }        
 
-        const hacerLista = (nodoPadre, json) => {
-            
+        const hacerLista = (nodoPadre, info) => {
+            info.map(r => {
+                if (typeof r == "object") { // No funciona con el isArray porque no es un array, el typeof te devuelve el tipo en string, en minúscula
+                    // Creo el li que toca con el nombre del padre para no perderlo
+                    let li = document.createElement("li")
+                    let txt = document.createTextNode(r.nombre)
+                    li.appendChild(txt)
+                    // Creo el ul en el que irán todos los hijos
+                    let newUl = document.createElement("ul")
+                    // Le pego el ul al li
+                    li.appendChild(newUl)
+                    // Le pego el li con toda la información al nodo padre que viene de la función
+                    nodoPadre.appendChild(li)
+                    // Vuelvo a llamar a la función para que me enlace los hijos en el ul creado
+                    hacerLista(newUl, r.hijos)
+                } else {
+                    let li = document.createElement("li")
+                    let txt = document.createTextNode(r)
+                    li.appendChild(txt)
+                    nodoPadre.appendChild(li)
+                }
+            })
         }
-        
-        // hacerLista(document.getElementById("padre"), sacarJSON())
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let godos = this.responseText // recogemos el json
+                godos = JSON.parse(godos) // parseamos el JSON                
+                hacerLista(document.getElementById("padre"), godos.reyesgodos)
+            }
+        };
+        xmlhttp.open("GET", "http://localhost/Proyectos/js/reyes_godos/godos.php", true);
+        xmlhttp.send();
+
     </script>
 </body>
 </html>
