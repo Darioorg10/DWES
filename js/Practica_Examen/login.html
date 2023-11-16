@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <p>Introduzca usuario y password:</p>
+    <p><input type="text" name="usuario" id="usuario" placeholder="usuario"></p>
+    <p><input type="password" name="pwd" id="pwd" placeholder="contraseña"></p>
+    <p><button type="submit" onclick="comprobar(document.getElementById('usuario').value, document.getElementById('pwd').value)">Log In</button></p>
+    <p id="respuesta"></p>    
+    <script>
+        const comprobar = (usuario, pwd) => {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("respuesta").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "http://localhost/DWES.git/js/Practica_Examen/login.php?usuario=" + usuario + "&pwd=" + pwd, true);
+            xhttp.send();
+        }        
+    </script>
+</body>
+</html>

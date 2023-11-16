@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reyes godos</title>
+</head>
+<body>
+    <ul id="padre">
+
+    </ul>
+    <script>
+        const crearLista = (nodoPadre, info) => {
+            info.map(r => { // El info es objJSON.reyesgodos                
+                if (typeof r === "object") {
+                    let li = document.createElement("li")
+                    let txt = document.createTextNode(r.nombre)
+                    li.appendChild(txt)
+                    let newUl = document.createElement("ul")
+                    li.appendChild(newUl)
+                    nodoPadre.appendChild(li)
+                    crearLista(newUl, r.hijos)
+                } else {
+                    let li = document.createElement("li")
+                    let txt = document.createTextNode(r)
+                    li.appendChild(txt)
+                    nodoPadre.appendChild(li)
+                }
+            })
+        }        
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {       
+                let objJSON = this.responseText;
+                objJSON = JSON.parse(objJSON);
+                crearLista(document.getElementById("padre"), objJSON.reyesgodos)
+            }
+        };
+        xhttp.open("GET", "https://localhost/DWES.git/js/Practica_Examen/godos.php", true);
+        xhttp.send();
+        
+    </script>
+</body>
+</html>

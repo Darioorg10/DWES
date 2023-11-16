@@ -1,4 +1,4 @@
-<?php 
+<?php
     $capital = $_REQUEST["capital"];
     $interes = $_REQUEST["interes"];
     $plazo = $_REQUEST["plazo"];

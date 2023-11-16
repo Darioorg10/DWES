@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préstamo</title>
+</head>
+<body>
+    <p>Cálculo de la cuota de un préstamo:</p>
+    <p><input type="number" name="capital" id="capital" placeholder="capital solicitado"></p>
+    <p><input type="number" name="interes" id="interes" placeholder="interés anual"></p>
+    <p><input type="number" name="plazo" id="plazo" placeholder="Plazo (meses)"></p>
+    <p><button type="submit" onclick="calcular(document.getElementById('capital').value, document.getElementById('interes').value, document.getElementById('plazo').value)">Calcular</button></p>
+    <p>Su cuota mensual será de: <span id="resultado"></span> Euros.</p>
+    <script>
+        const calcular = (capital, interes, plazo) => {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("resultado").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "http://localhost/DWES.git/js/Practica_Examen/prestamo.php?interes=" + interes + "&capital=" + capital + "&plazo=" + plazo, true);
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>

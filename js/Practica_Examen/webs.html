@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webs</title>
+</head>
+<body>
+    <div id="lasWebs"></div>
+    <script>
+        const sacarWebs = (arr) => {
+            let txt = ""
+            for (let i = 0; i < arr.length; i++) {           
+                txt += "<p><a href='"+ arr[i].url + "'" + ">" + arr[i].display + "</a></p>"
+            }
+            return txt
+        }
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            let objJSON = this.responseText;
+            objJSON = JSON.parse(objJSON)
+            document.getElementById("lasWebs").innerHTML = sacarWebs(objJSON)            
+        }
+        };
+        xhttp.open("GET", "webs.json", true);
+        xhttp.send();
+    </script>
+</body>
+</html>

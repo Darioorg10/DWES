@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Creación de una lista de nodos</title>
+</head>
+<body>
+    <ol id="lista">
+        <li>Perico</li>
+        <li>Juanico</li>
+        <ul>
+            <li>Jose</li>
+            <ul>
+                <li>Roman</li>
+                <li>Marco</li>
+                <li>Rodrigo</li>
+            </ul>
+            <li>Jose</li>
+
+            <li>Lorenzo</li>
+            <ul>
+                <li>Dimas</li>
+                <li>Gestas</li>
+                <li>Malakatos</li>
+                <li>Jose</li>
+            </ul>
+        </ul>
+        <li>Sofoclis</li>
+    </ol>
+    <script>        
+        const changeMan = (nodoPadre, primerNombre, segundoNombre) => {
+            if (nodoPadre.innerHTML.toUpperCase() == primerNombre.toUpperCase()) {
+                nodoPadre.innerHTML = segundoNombre // Cambiamos el nombre
+            }
+            for (let i = 0; i < nodoPadre.children.length; i++) { // Recorremos la lista
+                changeMan(nodoPadre.children[i], primerNombre, segundoNombre)
+            }
+        }
+
+        // AYUDA PARA AJAX
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let objJSON = this.responseText; // Traemos los datos
+                objJSON = JSON.parse(objJSON); // Lo parseamos                
+                objJSON.map(e => {
+                    changeMan(document.getElementById("lista"), e.NOMBREI, e.NOMBREF)
+                })
+            }
+        };
+        xhttp.open("GET", "changeman.json", true);
+        xhttp.send();
+    </script>
+</body>
+</html>
