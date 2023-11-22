@@ -10,11 +10,13 @@
     <title>Videoclub</title>
     <style>
         table{
-            border-collapse: collapse;
+            border-collapse: collapse;            
         }
 
-        table, th, td{
+        th, td{
             border: 1px solid black;
+            padding: 0.5rem 2rem;
+            text-align: center;
         }
 
         th{
@@ -27,7 +29,12 @@
             color: blue;
             text-decoration: underline;
             cursor: pointer;
-        }        
+        }
+        
+        img{
+            width: 100px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -43,35 +50,12 @@
         }
 
         // Hacemos la consulta para mostrar la tabla
-        try {
-            $consulta = "select * from peliculas";
-            $resultado = mysqli_query($conexion, $consulta);
-        } catch (Exception $e) {
-            mysqli_close($conexion);
-            die(error_page("Videoclub", "<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
-            }            
+        require "vistas/vista_tabla.php";
 
-        $tupla = mysqli_fetch_assoc($resultado);
-        ?>
-        <table>
-            <tr>
-                <th>id</th>
-                <th>Título</th>
-                <th>Carátula</th>
-                <th><button type="submit" class="enlace" name="btnInsertar">Películas+</button></th>
-            </tr>
-        <?php
-            ?>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-            <?php
-            // Liberamos el resultado luego de haber hecho un select
-            mysqli_free_result($resultado);
+        // Listamos los datos
+        if (isset($_POST["btnDetalle"])) {
+            require "vistas/vista_detalle.php";
+        }        
         ?>
     </table>
 </body>

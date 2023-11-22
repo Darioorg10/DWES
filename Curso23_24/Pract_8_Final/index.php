@@ -1,4 +1,5 @@
 <?php
+session_start();
 require "src/ctes_funciones.php";
 
 if(isset($_POST["btnContBorrarFoto"]))
@@ -129,7 +130,7 @@ if(isset($_POST["btnContEditar"]))
 
         }
 
-        mysqli_close($conexion);
+        mysqli_close($conexion);        
         header("Location:index.php");
         exit;
     }
@@ -277,6 +278,7 @@ if(isset($_POST["btnContBorrar"]))
         .foto_detalle{height:250px}
         .paralelo{display:flex}
         .centrado{text-align:center}
+        .mensaje{color:blue; font-size: 1.5em;}
     </style>
 </head>
 <body>
@@ -300,6 +302,11 @@ if(isset($_POST["btnContBorrar"]))
     if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContNuevo"]))
     {
         require "vistas/vista_nuevo_usuario.php";
+    }
+
+    if (isset($_SESSION["mensaje"])) {
+        echo "<p class='mensaje'>".$_SESSION['mensaje']."</p>";
+        session_destroy();
     }
 
     require "vistas/vista_tabla_principal.php";
