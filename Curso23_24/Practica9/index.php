@@ -1,4 +1,5 @@
-<?php 
+<?php
+    session_start();
     require "src/ctes_funciones.php";
 ?>
 
@@ -55,7 +56,17 @@
         // Listamos los datos
         if (isset($_POST["btnDetalle"])) {
             require "vistas/vista_detalle.php";
-        }        
+        } else if(isset($_POST["btnBorrar"])){
+            try {
+                $consulta = "delete * from peliculas where idPelicula='".$_POST['btnBorrar']."'";
+                $resultado = mysqli_query($conexion, $consulta);
+            } catch (Exception $e) {
+                mysqli_close($conexion);
+                die(error_page("Videoclub", "<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
+            }
+            
+        }
+
         ?>
     </table>
 </body>

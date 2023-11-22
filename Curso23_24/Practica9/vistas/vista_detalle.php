@@ -8,10 +8,10 @@
             $consulta = "select * from peliculas where idPelicula = '".$_POST['btnDetalle']."'";
             $resultado = mysqli_query($conexion, $consulta);                
         } catch (Exception $e) {
-            die(error_page("Videoclub", "<p>No se han podido listar los datos</p>"));
+            die(error_page("Videoclub", "<p>No se han podido listar los datos: ".$e->getMessage()."</p>"));
         }
 
-        if (mysqli_num_rows($resultado) > 0) {
+        if (mysqli_num_rows($resultado) > 0) { // Si obtenemos resultado
             $datos_pelicula = mysqli_fetch_assoc($resultado);
             ?>
                 <p><strong>Título: </strong><?php echo $datos_pelicula["titulo"];?></p>
@@ -19,6 +19,9 @@
                 <p><strong>Sinopsis: </strong><?php echo $datos_pelicula["sinopsis"];?></p>
                 <p><strong>Temática: </strong><?php echo $datos_pelicula["tematica"];?></p>
                 <p><strong>Carátula: </strong><br><img src="Img/<?php echo $datos_pelicula["caratula"];?>"></p>
+                <form action="index.php">
+                    <button type="submit">Volver</button>
+                </form>
             <?php
         } else {
             echo "<p>El usuario seleccionado ya no se encuentra en la BD</p>";
