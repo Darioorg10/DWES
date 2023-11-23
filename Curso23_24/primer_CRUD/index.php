@@ -1,4 +1,6 @@
 <?php
+session_name("primer_CRUD");
+session_start();
 
 require "src/constantes_funciones.php"; // Nos traemos las funciones y las constantes
 
@@ -7,18 +9,21 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones y las const
             $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {
+            session_destroy();
             die(error_page("Práctica 1º CRUD", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
         }
         
         try {            
             $consulta = "delete from usuarios where id_usuario='".$_POST["btnContBorrar"]."'";
             mysqli_query($conexion, $consulta);
-        } catch (Exception $e) {            
+        } catch (Exception $e) {
             mysqli_close($conexion); // Cerramos la conexión
+            session_destroy(); // Destruimos la sesión antes de los die
             die(error_page("Práctica 1º CRUD", "<h1>Listado de los usuarios</h1><p>No ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));                        
         }
         // Aquí no hace falta liberar la consulta porque no es un select
         mysqli_close($conexion);
+        $_SESSION["mensaje"] = "El usuario ha sido borrado con éxito";
         header("Location:index.php");
         exit();
     }
@@ -31,6 +36,7 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones y las const
                 $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
                 mysqli_set_charset($conexion, "utf8");
             } catch (Exception $e) {
+                session_destroy();
                 die(error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
             }
 
@@ -51,6 +57,7 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones y las const
                     }
                     catch(Exception $e)
                     {
+                        session_destroy();
                         die(error_page("Práctica 1º CRUD","<h1>Práctica 1º CRUD</h1><p>No ha podido conectarse a la base de batos: ".$e->getMessage()."</p>"));
                     }
                 }
@@ -76,11 +83,12 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones y las const
 
                 } catch (Exception $e) {
                     mysqli_close($conexion);
+                    session_destroy();
                     die(error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p>"));
                 }
 
                 mysqli_close($conexion);
-
+                $_SESSION["mensaje"] = "El usuario ha sido actualizado con éxito";
                 header("Location:index.php");
                 exit;
             }
@@ -125,6 +133,10 @@ require "src/constantes_funciones.php"; // Nos traemos las funciones y las const
 
         .error{
             color:red
+        }
+
+        .mensaje{
+            color:blue; font-size: 1.5em;
         }
     </style>
 </head>

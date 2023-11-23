@@ -57,7 +57,9 @@ if(isset($_POST["btnNuevoUsuario"]) || isset($_POST["btnContInsertar"]))
 
             // Cerramos la conexión
             mysqli_close($conexion);
-
+            session_name("primer_CRUD");            
+            session_start();
+            $_SESSION["mensaje"] = "El usuario ha sido creado con éxito";
             // Y vamos a index.php
             header("Location:index.php");
             exit;

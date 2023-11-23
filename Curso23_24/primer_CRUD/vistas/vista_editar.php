@@ -9,6 +9,7 @@
         $consulta = "select * from usuarios where id_usuario='".$id_usuario."'";
         $resultado = mysqli_query($conexion, $consulta);            
     } catch (Exception $e) {
+        session_destroy();
         mysqli_close($conexion); // Cerramos la conexión
         die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");                            
     }

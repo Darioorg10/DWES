@@ -3,6 +3,7 @@ try {
             $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {
+            session_destroy();
             die("<p>No se ha podido conectarse a la base de datos: ".$e->getMessage()."</p></body></html>");
         }                
 
@@ -26,4 +27,9 @@ try {
         }
         echo "</table>";
         mysqli_free_result($resultado);
+
+        if (isset($_SESSION["mensaje"])) {
+            echo "<p class='mensaje'>".$_SESSION['mensaje']."</p>";
+            session_destroy();
+        }
 ?>

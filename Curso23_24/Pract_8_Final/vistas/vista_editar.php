@@ -13,6 +13,7 @@ if(!isset($conexion))
     }
     catch(Exception $e)
     {
+        session_destroy();
         die("<p>No ha podido conectarse a la base de batos: ".$e->getMessage()."</p></body></html>");
     }  
 }
@@ -24,6 +25,7 @@ try{
 catch(Exception $e)
 {
     mysqli_close($conexion);
+    session_destroy();
     die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
 }
 

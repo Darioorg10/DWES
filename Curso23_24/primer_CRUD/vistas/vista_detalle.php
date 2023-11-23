@@ -6,8 +6,9 @@ try {
     $consulta = "select * from usuarios where id_usuario='".$_POST["btnDetalle"]."'";
     $resultado = mysqli_query($conexion, $consulta);            
 } catch (Exception $e) {
-    die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
-    mysqli_close($conexion); // Cerramos la conexión            
+    mysqli_close($conexion); // Cerramos la conexión
+    session_destroy();
+    die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");    
 }
 
 // Comprobamos que exista por si se borra un usuario

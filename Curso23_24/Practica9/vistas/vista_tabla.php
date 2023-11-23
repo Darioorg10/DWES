@@ -20,7 +20,7 @@
         echo "<td>".$tupla['idPelicula']."</td>";
         echo "<td><form action='index.php' method='post'><button type='submit' name='btnDetalle' class='enlace' value='".$tupla['idPelicula']."'>".$tupla['titulo']."</button></form></td>";
         echo "<td><img src='Img/".$tupla['caratula']."'></td>";
-        echo "<td><form action='index.php'><button class='enlace' type='submit' name='btnBorrar' value='".$tupla['idPelicula']."'>Borrar</button> - <button type='submit' class='enlace'>Editar</button></form></td>";
+        echo "<td><form action='index.php' method='post'><button class='enlace' type='submit' name='btnBorrar' value='".$tupla['idPelicula']."'>Borrar</button> - <button type='submit' class='enlace'>Editar</button></form></td>";
         echo "</tr>";
     }
 ?>                
