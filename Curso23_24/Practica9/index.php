@@ -70,6 +70,7 @@ if (isset($_POST["btnContBorrar"])) {
     // Nos conectamos con la base de datos
     try {
         $conexion = mysqli_connect(HOST, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
+        mysqli_set_charset($conexion, "utf8");
     } catch (Exception $e) {
         die(error_page("Videoclub", "<p>No se ha podido realizar la conexión con la base de datos: " . $e->getMessage() . " </p>"));
     }
