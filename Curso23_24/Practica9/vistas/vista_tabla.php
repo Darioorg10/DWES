@@ -4,7 +4,7 @@
         $resultado = mysqli_query($conexion, $consulta);
     } catch (Exception $e) {
         mysqli_close($conexion);
-        die(error_page("Videoclub", "<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
+        die("<p>No se ha podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
     }    
 ?>
     <table>
@@ -20,7 +20,7 @@
         echo "<td>".$tupla['idPelicula']."</td>";
         echo "<td><form action='index.php' method='post'><button type='submit' name='btnDetalle' class='enlace' value='".$tupla['idPelicula']."'>".$tupla['titulo']."</button></form></td>";
         echo "<td><img src='Img/".$tupla['caratula']."'></td>";
-        echo "<td><form action='index.php' method='post'><button class='enlace' type='submit' name='btnBorrar' value='".$tupla['idPelicula']."'>Borrar</button> - <button type='submit' class='enlace'>Editar</button></form></td>";
+        echo "<td><form action='index.php' method='post'><button class='enlace' type='submit' name='btnBorrar' value='".$tupla['idPelicula']."'>Borrar</button> - <button type='submit' class='enlace' value='".$tupla["idPelicula"]."'>Editar</button></form></td>";
         echo "</tr>";
     }
 ?>                

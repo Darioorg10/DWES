@@ -2,7 +2,7 @@
     try {
         $conexion = mysqli_connect(HOST, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
     } catch (Exception $e) {
-        die(error_page("Videoclub", "<p>No se ha podido realizar la conexión con la base de datos: ".$e->getMessage()."</p>"));
+        die("<p>No se ha podido realizar la conexión con la base de datos: ".$e->getMessage()."</p></body></html>");
     }
         try {
             $consulta = "select * from peliculas where idPelicula = '".$_POST['btnDetalle']."'";
@@ -11,7 +11,8 @@
             die(error_page("Videoclub", "<p>No se han podido listar los datos: ".$e->getMessage()."</p>"));
         }
 
-        if (mysqli_num_rows($resultado) > 0) { // Si obtenemos resultado
+        // Si obtenemos resultado
+        if (mysqli_num_rows($resultado) > 0) { 
             $datos_pelicula = mysqli_fetch_assoc($resultado);
             ?>
                 <p><strong>Título: </strong><?php echo $datos_pelicula["titulo"];?></p>
