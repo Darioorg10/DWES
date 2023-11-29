@@ -1,6 +1,33 @@
-<?php 
+<?php
+
     session_name("Primer_CRUD_Sesion");
     session_start();
+
+    if (isset($_POST["btnContBorrar"])) {
+        // Hacemos la conexión con la base de datos
+        try {
+            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+            mysqli_set_charset($conexion, "utf8");
+        } catch (Exception $e) {
+            session_destroy();
+            die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
+        }
+
+        // Hacemos el delete para borrar los datos
+        try {
+            $consulta = "delete from usuarios where id_usuario=".$_POST["btnContBorrar"]."";
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            session_destroy();
+            die("<p>No has podido hacer el delete: ".$e->getMessage()." </p></body></html>");
+        }
+
+        $_SESSION["mensaje"] = "Usuario borrado con éxito";
+        session_destroy();
+        mysqli_close($conexion);
+
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +54,7 @@
 
     .mensaje{
         color: blue;
+        font-size: 20px;
     }
 
     .enlace{
@@ -64,9 +92,10 @@
 
                 while ($tupla = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
-                    echo "<td><button class='enlace' name='btnDetalle' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></td>";
-                    echo "<td><button class='enlace' name='btnBorrar' value='".$tupla["id_usuario"]."'>X</button></td>";
-                    echo "<td><button class='enlace' name='btnEditar' value='".$tupla["id_usuario"]."'>~</button></td>";
+                    // ¡¡¡¡¡¡¡¡¡¡¡ IMPORTANTE HACER UN FORM POR CADA BOTÓN !!!!!!!!!!!!
+                    echo "<td><form action='index.php' method='post'><button class='enlace' name='btnDetalle' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></form></td>";
+                    echo "<td><form action='index.php' method='post'><input type='hidden' name='nombreOculto' value='".$tupla["nombre"]."'></input><button class='enlace' name='btnBorrar' value='".$tupla["id_usuario"]."'>X</button></form></td>";
+                    echo "<td><form action='index.php' method='post'><button class='enlace' name='btnEditar' value='".$tupla["id_usuario"]."'>~</button></form></td>";
                     echo "</tr>";
                 }
                   
@@ -75,10 +104,7 @@
         </table><br>
         <button type="submit" name="btnInsertar">Insertar nuevo usuario</button>
     </form>
-    <?php 
-        if (isset($_SESSION["mensaje"])) {
-            echo "<p class='mensaje'>".$_SESSION["mensaje"]."</p>";
-        }
+    <?php             
 
         if (isset($_POST["btnDetalle"])) {
         
@@ -108,13 +134,23 @@
                 echo "<p><strong>Email: </strong>".$tupla["email"]."</p>";
             }            
 
-            echo "<form action='index.php' method='post'><button name='btnVolver'>Volver</button></form>";
+            echo "<form action='index.php' method='post'><button name='btnVolver'>Volver</button></form>";                        
 
+            // En cada select tenemos que mostrar el resultado
             mysqli_free_result($resultado);
-            mysqli_close($conexion);            
+            mysqli_close($conexion);                        
 
-
+        } else if(isset($_POST["btnBorrar"])){
+            echo "<p>Se dispone a borrar al usuario ".$_POST["nombreOculto"]." con id: ".$_POST["btnBorrar"]."</p>";
+            echo "<form action='index.php' method='post'><button name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
+            echo "<button name='btnAtras'>Atrás</button></form>";
         }
+
+        // Mostramos el mensaje (al final de todos los if)
+        if (isset($_SESSION["mensaje"])) {
+            echo "<p class='mensaje'>".$_SESSION["mensaje"]."</p>";
+        }
+
     ?>
 </body>
 </html>
