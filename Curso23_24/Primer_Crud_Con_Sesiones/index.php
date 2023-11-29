@@ -3,6 +3,8 @@
     session_name("Primer_CRUD_Sesion");
     session_start();
 
+    require "src/const_y_funciones.php";
+
     if (isset($_POST["btnContBorrar"])) {
         // Hacemos la conexión con la base de datos
         try {
@@ -10,7 +12,7 @@
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {
             session_destroy();
-            die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
+            die(error_page("Primer CRUD", "<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p>"));
         }
 
         // Hacemos el delete para borrar los datos
@@ -19,14 +21,14 @@
             $resultado = mysqli_query($conexion, $consulta);
         } catch (Exception $e) {
             session_destroy();
-            die("<p>No has podido hacer el delete: ".$e->getMessage()." </p></body></html>");
+            die(error_page("Primer CRUD", "<p>No has podido hacer el delete: ".$e->getMessage()." </p>"));
         }
 
         $_SESSION["mensaje"] = "Usuario borrado con éxito";
         session_destroy();
         mysqli_close($conexion);
 
-    }
+    }    
 
 ?>
 
@@ -106,44 +108,18 @@
     </form>
     <?php             
 
-        if (isset($_POST["btnDetalle"])) {
-        
-            if (!isset($conexion)) {
-                // Hacemos la conexión con la base de datos
-                try {
-                    $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
-                    mysqli_set_charset($conexion, "utf8");
-                } catch (Exception $e) {
-                    session_destroy();
-                    die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
-                }
-            }
+        if (isset($_POST["btnDetalle"])) {     
 
-            // Hacemos el select para sacar los datos
-            try {
-                $consulta = "select * from usuarios where id_usuario='".$_POST["btnDetalle"]."'";
-                $resultado = mysqli_query($conexion, $consulta);
-            } catch (Exception $e) {
-                session_destroy();
-                die("<p>No has podido hacer el select: ".$e->getMessage()." </p></body></html>");
-            }
-
-            while ($tupla = mysqli_fetch_assoc($resultado)) {
-                echo "<p><strong>Nombre: </strong>".$tupla["nombre"]."</p>";
-                echo "<p><strong>Usuario: </strong>".$tupla["usuario"]."</p>";
-                echo "<p><strong>Email: </strong>".$tupla["email"]."</p>";
-            }            
-
-            echo "<form action='index.php' method='post'><button name='btnVolver'>Volver</button></form>";                        
-
-            // En cada select tenemos que mostrar el resultado
-            mysqli_free_result($resultado);
-            mysqli_close($conexion);                        
+            require "vistas/vista_detalle.php";
 
         } else if(isset($_POST["btnBorrar"])){
+
             echo "<p>Se dispone a borrar al usuario ".$_POST["nombreOculto"]." con id: ".$_POST["btnBorrar"]."</p>";
             echo "<form action='index.php' method='post'><button name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
             echo "<button name='btnAtras'>Atrás</button></form>";
+
+        } else if(isset($_POST["btnInsertar"])){
+            header("Location:usuario_nuevo.php");
         }
 
         // Mostramos el mensaje (al final de todos los if)
