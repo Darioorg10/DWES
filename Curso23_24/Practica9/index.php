@@ -30,7 +30,10 @@ if (isset($_POST["btnContInsertar"])) {
     $error_director = strlen($_POST["director"]) > 20 || $_POST["director"] == "";
     $error_sinopsis = $_POST["sinopsis"] == "";
     $error_tematica = strlen($_POST["tematica"]) > 15 || $_POST["tematica"] == "";    
-    $error_foto = !getimagesize($_FILES["caratula"]["tmp_name"]) || $_FILES["caratula"]["error"] || !explode(".", $_FILES["caratula"]["name"]);    
+    $error_foto = false;
+    if ($_FILES["caratula"]["name"] != ""){
+        $error_foto = !getimagesize($_FILES["caratula"]["tmp_name"]) || $_FILES["caratula"]["error"] || !explode(".", $_FILES["caratula"]["name"]);
+    }        
 
     $error_form = $error_titulo || $error_director || $error_sinopsis || $error_tematica || $error_foto;
 
@@ -48,9 +51,7 @@ if (isset($_POST["btnContInsertar"])) {
         try {
             // No insertamos la carátula del tirón, primero insertamos los datos y luego actualizamos con la foto
             $consulta = "insert into `peliculas`(`titulo`, `director`, `sinopsis`, `tematica`) values ('".$_POST["titulo"]."','".$_POST["director"]."','".$_POST["sinopsis"]."','".$_POST["tematica"]."')";
-            $resultado = mysqli_query($conexion, $consulta);
-            header("Location:index.php");
-            exit;
+            $resultado = mysqli_query($conexion, $consulta);            
         } catch (Exception $e) {
             session_destroy();            
             die(error_page("Videoclub", "<p>No se ha podido realizar la inserción: " . $e->getMessage() . "</p>"));
@@ -59,16 +60,25 @@ if (isset($_POST["btnContInsertar"])) {
         // Sacamos así la última id
         $ultima_id = mysqli_insert_id($conexion);
         $array_nombre = explode(".", $_FILES["caratula"]["name"]);
-        $nombre = "imagen$ultima_id".end($array_nombre)."";
-
-        try {
-            $consulta = "update `peliculas` set `caratula`='".$nombre."' where idPelicula=".$ultima_id."";
-            $resultado = mysqli_query($conexion, $consulta);
-        } catch (Exception $e) {
-            unlink("Img/".$nombre);
-            session_destroy();            
-            die(error_page("Videoclub", "<p>No se ha podido realizar el update: " . $e->getMessage() . "</p>"));
+        $nombre = "imagen$ultima_id.".end($array_nombre)."";
+        
+        @$var = move_uploaded_file($_FILES["caratula"]["tmp_name"], "Img/$nombre");
+        if ($var) {
+            try {
+                $consulta = "update `peliculas` set `caratula`='".$nombre."' where idPelicula=".$ultima_id."";
+                $resultado = mysqli_query($conexion, $consulta);
+                header("Location:index.php");
+            } catch (Exception $e) {
+                unlink("Img/".$nombre);
+                session_destroy();
+                die(error_page("Videoclub", "<p>No se ha podido realizar el update: " . $e->getMessage() . "</p>"));
+            } 
+        } else {
+            session_destroy();
+            die(error_page("Videoclub", "<p>No se ha podido subir la imagen: " . $e->getMessage() . "</p>"));
         }
+
+        
     }    
 
 }
@@ -194,8 +204,8 @@ if (isset($_POST["btnContInsertar"])) {
             ?>
         </p>
         <p>
-            <label for="foto">Seleccione una imagen</label>
-            <input type="file" name="foto" id="foto" accept="image/*">
+            <label for="caratula">Seleccione una imagen</label>
+            <input type="file" name="caratula" id="caratula" accept="image/*">
             <?php 
                 if (isset($_POST["btnContInsertar"]) && $error_foto) {                    
                     echo "<span class='error'>*</span>";
