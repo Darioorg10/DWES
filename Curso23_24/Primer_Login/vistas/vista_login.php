@@ -29,6 +29,7 @@ if(isset($_POST["btnLogin"]))
             die(error_page("Primer Login","<h1>Primer Login</h1><p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
         }
 
+        // Significa que existe un usuario con ese nombre y contraseña
         if(mysqli_num_rows($resultado)>0)
         {
             $_SESSION["usuario"]=$_POST["usuario"];

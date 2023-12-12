@@ -22,9 +22,7 @@ if(isset($_SESSION["usuario"]))
     if($datos_usuario_logueado["tipo"]=="admin")
         require "vistas/vista_admin.php";
     else
-        require "vistas/vista_normal.php";
-
-    mysqli_close($conexion);
+        require "vistas/vista_normal.php";    
 
 }
 else

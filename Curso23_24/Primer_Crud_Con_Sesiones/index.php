@@ -25,7 +25,7 @@
         }
 
         $_SESSION["mensaje"] = "Usuario borrado con éxito";
-        session_destroy();
+        session_destroy();                    
         mysqli_close($conexion);
 
     }    
@@ -108,7 +108,7 @@
     </form>
     <?php             
 
-        if (isset($_POST["btnDetalle"])) {     
+        if (isset($_POST["btnDetalle"])) {
 
             require "vistas/vista_detalle.php";
 
