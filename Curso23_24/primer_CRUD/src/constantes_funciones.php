@@ -5,7 +5,7 @@
 define("SERVIDOR_BD", "localhost");
 define("USUARIO_BD", "jose");
 define("CLAVE_BD", "josefa");
-define("NOMBRE_BD", "bd_foro");
+define("NOMBRE_BD", "bd_foro2");
 
 function error_page($title, $body){
     $page='<!DOCTYPE html>

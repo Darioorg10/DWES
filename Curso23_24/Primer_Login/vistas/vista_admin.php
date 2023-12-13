@@ -2,7 +2,7 @@
 if (isset($_POST["btnContBorrar"])) {
     // Hacemos la conexión con la base de datos
     try {
-        $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+        $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro2");
         mysqli_set_charset($conexion, "utf8");
     } catch (Exception $e) {
         session_destroy();
@@ -29,7 +29,7 @@ if (isset($_POST["btnContInsertar"])) {
 
     if (!$error_usuario) {
         try {
-            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro2");
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {                
             die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
@@ -44,7 +44,7 @@ if (isset($_POST["btnContInsertar"])) {
 
     if (!$error_email) {
         try {
-            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+            $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro2");
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {                
             die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
@@ -94,6 +94,18 @@ if (isset($_POST["btnContInsertar"])) {
             border-collapse: collapse;
         }
 
+        .error{
+            color: red;
+        }
+
+        .txt_centrado{
+            text-align: center;
+        }
+
+        .no_bordes{
+            border: none;
+        }
+
         table,
         td,
         th {
@@ -108,18 +120,11 @@ if (isset($_POST["btnContInsertar"])) {
     <div>Bienvenido <strong><?php echo $datos_usuario_logueado["nombre"]; ?></strong> -
         <form class='enlinea' action="index.php" method="post">
             <button class='enlace' type="submit" name="btnSalir">Salir</button>
-
-            <table>
-                <tr>
-                    <th>Nombre de Usuario</th>
-                    <th>Borrar</th>
-                    <th>Editar</th>
-                    <th><button class="enlace" id="btnInsertar">Usuario+</button></th>
-                </tr>
-                <?php
+            
+            <?php
                 // Hacemos la conexión con la base de datos
                 try {
-                    $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+                    $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro2");
                     mysqli_set_charset($conexion, "utf8");
                 } catch (Exception $e) {
                     session_destroy();
@@ -128,12 +133,16 @@ if (isset($_POST["btnContInsertar"])) {
 
                 // Hacemos el select para sacar los datos
                 try {
-                    $consulta = "select * from usuarios";
+                    $consulta = "select * from usuarios where tipo<>'admin'";
                     $resultado = mysqli_query($conexion, $consulta);
                 } catch (Exception $e) {
                     session_destroy();
                     die("<p>No has podido hacer el select: " . $e->getMessage() . " </p></body></html>");
                 }
+
+                echo "<h2 class='txt_centrado'>Listado de los usuarios</h2>";
+                echo "<table id='tb_principal'>";
+                echo "<tr></th>Nombre de usuario</th><th>Borrar</th><th>Editar</th><th>+</th></tr>";
 
                 while ($tupla = mysqli_fetch_assoc($resultado)) {
                     echo "<tr>";
@@ -141,6 +150,7 @@ if (isset($_POST["btnContInsertar"])) {
                     echo "<td><form action='index.php' method='post'><button class='enlace' name='btnDetalle' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></form></td>";
                     echo "<td><form action='index.php' method='post'><input type='hidden' name='nombreOculto' value='" . $tupla["nombre"] . "'></input><button class='enlace' name='btnBorrar' value='" . $tupla["id_usuario"] . "'>X</button></form></td>";
                     echo "<td><form action='index.php' method='post'><button class='enlace' name='btnEditar' value='" . $tupla["id_usuario"] . "'>~</button></form></td>";
+                    echo "<td class='no_bordes'></td>";
                     echo "</tr>";
                 }
 
@@ -154,7 +164,7 @@ if (isset($_POST["btnContInsertar"])) {
         if (!isset($conexion)) {
             // Hacemos la conexión con la base de datos
             try {
-                $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
+                $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro2");
                 mysqli_set_charset($conexion, "utf8");
             } catch (Exception $e) {
                 session_destroy();
