@@ -1,6 +1,6 @@
 <?php
 
-    require "src/ctes_y_func.php";
+include_once "src/ctes_y_func.php";
 
     // Control de errores
     if (isset($_POST["btnContinuar"])) {

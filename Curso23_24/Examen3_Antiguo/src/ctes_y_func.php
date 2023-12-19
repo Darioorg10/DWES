@@ -4,6 +4,7 @@
     define("USUARIO_BD", "jose");
     define("CLAVE_BD", "josefa");
     define("NOMBRE_BD", "bd_videoclub2");
+    define("MINUTOS_INACT", 5);
 
     function error_page($title, $body){
         return "<!DOCTYPE html>
