@@ -55,14 +55,7 @@
         <title>Examen3 Curso 23-24</title>
         <style>
             img{height:200px}
-            div{text-align:center;width:30%;margin-top:2.5%;margin-left:2.5%;float:left}
-            .error{
-                color: red;
-            }
-            .mensaje{
-                font-size: 20px;
-                color: blue;
-            }
+            p.libros{text-align:center;width:30%;margin-top:2.5%;margin-left:2.5%;float:left}
         </style>
     </head>
     <body>
@@ -74,9 +67,9 @@
                 <?php
                 if(isset($_POST["usuario"])&& $error_usuario)
                     if($_POST["usuario"]=="")
-                        echo "<span class='error'>*Campo obligatorio*</span>";
+                        echo "<span class='error'> Campo vacío</span>"; 
                     else
-                        echo "<span class='error'>*Usuario/clave incorrectos*</span>";
+                        echo "<span class='error'> Usuario/clave incorrectos</span>"; 
                 ?>
             </p>
             <p>
@@ -84,7 +77,7 @@
                 <input type="password" name="clave" id="clave">
                 <?php
                 if(isset($_POST["clave"])&& $error_clave)
-                    echo "<span class='error'>*Campo obligatorio*</span>";
+                    echo "<span class='error'> Campo vacío</span>";    
                 ?>
             </p>
             <p>
@@ -99,29 +92,7 @@
         }
 
 
-        echo "<h3>Listado de los usuarios</h3>";
-        
-
-        try{
-
-            $resultado=mysqli_query($conexion,"select * from libros");
-        }
-        catch(Exception $e)
-        {
-            session_destroy();
-            mysqli_close($conexion);
-            die("<p>No he podido realizar la consulta: ".$e->getMessage()."</p></body></html>");
-        }
-
-        while($tupla=mysqli_fetch_assoc($resultado))
-        {
-            echo "<div>";
-            echo "<img src='img/".$tupla["portada"]."' alt='imagen libro' title='imagen libro'><br>";
-            echo $tupla["titulo"]." - ".$tupla["precio"]."€";
-            echo "</div>";
-        }
-
-        mysqli_free_result($resultado)
+        require "vistas/vista_libros_atres.php";
         ?>
     </body>
     </html>
