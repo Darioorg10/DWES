@@ -9,6 +9,7 @@
         private $alquilada;
         private $precio;
         private $fechaDevolucion;
+        private $recargo;
 
         // Constructor
         public function __construct($nombre, $anio, $director, $alquilada, $precio, $fechaDevolucion) {
@@ -18,6 +19,7 @@
             $this->alquilada=$alquilada;
             $this->precio=$precio;
             $this->fechaDevolucion = new DateTime($fechaDevolucion);
+            $this->recargo = 1.2;
         }
 
 
@@ -96,7 +98,15 @@
 
         // Método para calcular el recargo
         public function calcularRecargo(){
-
+                $fecha_actual = new DateTime("now");
+                $recargo = 0;
+        
+                if ($fecha_actual > $this->fechaDevolucion){
+                    $dif_dias = $fecha_actual->diff($this->fechaDevolucion);
+                    $recargo = intval($dif_dias->format("%a")) * $this->recargo;
+                }
+        
+                return $recargo;
         }
 
     }
