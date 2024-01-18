@@ -43,7 +43,7 @@ if(isset($_POST["btnAgregar"]))
             if($var)
             {
                 try{
-                    $consulta="update libros set portada='?' where referencia='?'";
+                    $consulta="update libros set portada=? where referencia=?";
                     $sentencia=$conexion->prepare($consulta);
                     $sentencia->execute([$nombre_nuevo,$_POST["referencia"]]);
                 }

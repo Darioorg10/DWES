@@ -8,7 +8,7 @@
         if(!$error_form)
         {
             try{
-                $consulta="select * from usuarios where lector='?' and clave='?'";
+                $consulta="select * from usuarios where lector=? and clave=?";
                 $sentencia=$conexion->prepare($consulta);
                 $clave = md5($_POST["clave"]);
                 $sentencia->execute([$_POST["usuario"],$clave]); // Dentro de un execute no puedes meter md5
@@ -20,7 +20,7 @@
                 die(error_page("Examen3 Curso 23-24","<h1>Librería</h1><p>No se ha podido realizar la consulta: ".$e->getMessage()."</p>"));
             }
             
-            if(mysqli_num_rows($resultado)>0)
+            if($sentencia->rowCount() > 0)
             {
                 $_SESSION["usuario"]=$_POST["usuario"];
                 $_SESSION["clave"]=md5($_POST["clave"]);

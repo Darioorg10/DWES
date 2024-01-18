@@ -1,7 +1,7 @@
 <?php
 
 try{
-    $consulta="select * from usuarios where lector='?' and clave='?'";
+    $consulta="select * from usuarios where lector=? and clave=?";
     $sentencia = $conexion->prepare($consulta);
     $sentencia->execute([$_SESSION["usuario"], $_SESSION["clave"]]);
  }
