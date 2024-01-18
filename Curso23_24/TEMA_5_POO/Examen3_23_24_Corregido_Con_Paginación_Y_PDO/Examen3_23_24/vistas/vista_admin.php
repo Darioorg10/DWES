@@ -130,7 +130,7 @@ if(isset($_POST["btnEditar"]))
         
         echo "<table>";
         echo "<tr><th>Ref</th><th>Título</th><th>Acción</th></tr>";
-        while($tupla=$sentencia->fetch(PDO::FETCH_ASSOC))
+        while($tupla=$sentencia->fetchAll(PDO::FETCH_ASSOC))
         {
             echo "<tr>";
             echo "<td>".$tupla["referencia"]."</td>";

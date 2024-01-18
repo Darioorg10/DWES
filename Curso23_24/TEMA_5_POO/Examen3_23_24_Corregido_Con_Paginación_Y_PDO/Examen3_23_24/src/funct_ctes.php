@@ -27,13 +27,13 @@ function repetido($conexion,$tabla,$columna,$valor,$columna_clave=null,$valor_cl
 {
     try{
         if(isset($columna_clave)){
-            $consulta="select * from ? where ?='?' AND ?<>'?'";
+            $consulta="select * from $tabla where $columna=? AND $columna_clave<>?";
             $sentencia=$conexion->prepare($consulta);
-            $sentencia->execute([$tabla,$columna,$valor,$columna_clave, $valor_clave]);
+            $sentencia->execute([$valor, $valor_clave]);
         } else {
-            $consulta="select * from ? where ?='?'";
+            $consulta="select * from $tabla where $columna=?";
             $sentencia=$conexion->prepare($consulta);
-            $sentencia->execute([$tabla,$columna,$valor]);
+            $sentencia->execute([$valor]);
         }            
         
         $respuesta=$sentencia->rowCount()<=0;

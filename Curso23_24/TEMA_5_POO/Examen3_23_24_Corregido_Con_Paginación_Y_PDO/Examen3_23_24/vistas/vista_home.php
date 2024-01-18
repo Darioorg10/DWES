@@ -10,7 +10,8 @@
             try{
                 $consulta="select * from usuarios where lector='?' and clave='?'";
                 $sentencia=$conexion->prepare($consulta);
-                $sentencia->execute([$_POST["usuario"],md5($_POST["clave"])]);
+                $clave = md5($_POST["clave"]);
+                $sentencia->execute([$_POST["usuario"],$clave]); // Dentro de un execute no puedes meter md5
             }
             catch(Exception $e)
             {
@@ -24,7 +25,7 @@
                 $_SESSION["usuario"]=$_POST["usuario"];
                 $_SESSION["clave"]=md5($_POST["clave"]);
                 $_SESSION["ultima_accion"]=time();
-                $datos_usu_log=$sentencia->fetch(PDO::FETCH_ASSOC);
+                $datos_usu_log=$sentencia->fetchAll(PDO::FETCH_ASSOC);
                 $sentencia = null;
                 $conexion = null;
 

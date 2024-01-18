@@ -168,7 +168,7 @@
         try{
             $consulta="insert into usuarios(nombre,usuario,clave,email) values(?,?,?,?)";
             $sentencia=$conexion->prepare($consulta);
-            $sentencia->execute([$nombre,$usuario,$clave,$email]);
+            $sentencia->execute([$nombre,$usuario,$clave,$email]); // IMPORTANTE: EN EL EXECUTE NO PODEMOS METER NINGUNA FUNCIÓN, COMO md5("123");
         }
         catch(PDOException $e)
         {
