@@ -5,7 +5,7 @@ require __DIR__ . '/Slim/autoload.php';
 $app= new \Slim\App;
 
 // Estos métodos tienen dos argumentos, el primero es la continuación que sería de la dirección en la que estamos
-// es decir /Proyectos/CURSO23_23/Teoria_Servicios_Web(APIs)/primera_api/saludo
+// es decir /Proyectos/CURSO23_23/TEMA_6_SERVICIOS_WEB/Teoria_Servicios_Web(APIs)/primera_api/saludo
 $app->get('/saludo', function($request){ // En este caso vamos a hacer un método get con un parámetro (nombre)
     $respuesta["mensaje"] = "Hola";
 
