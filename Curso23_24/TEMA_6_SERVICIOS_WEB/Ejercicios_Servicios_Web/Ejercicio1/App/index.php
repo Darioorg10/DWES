@@ -84,12 +84,14 @@
     }
 
     // Con un for lo mismo sería
+    /*
     for ($i=0; $i < count($obj->productos); $i++) {
         echo "<tr>";
         echo "<td>".$obj->productos[$i]->cod."</td>";
         echo "<td>".$obj->productos[$i]->nombre_corto."</td>";
         echo "</tr>";
     }
+    */
 
     echo "</table>";
 
