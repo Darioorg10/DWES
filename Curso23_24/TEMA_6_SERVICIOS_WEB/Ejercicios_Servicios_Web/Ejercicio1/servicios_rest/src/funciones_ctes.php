@@ -179,7 +179,7 @@ function obtener_familias()
         return $respuesta;
     }
 
-    $respuesta["productos"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $respuesta["familias"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
     $sentencia = null;
     $conexion = null;
     return $respuesta;
