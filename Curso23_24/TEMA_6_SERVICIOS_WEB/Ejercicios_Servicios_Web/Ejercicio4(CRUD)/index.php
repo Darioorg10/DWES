@@ -1,119 +1,189 @@
 <?php
+session_name("primer_CRUD_con_SW");
+session_start();
 
-    require "src/func_ctes.php";
+require "src/constantes_funciones.php"; // Nos traemos las funciones y las constantes
 
-    if (isset($_POST["btnContBorrar"])) {
+if (isset($_POST["btnContBorrar"])) {
+    $url = DIR_SERV . "/borrarUsuario/" . $_POST["btnContBorrar"];
+    $respuesta = consumir_servicios_REST($url, "DELETE");
+    $obj = json_decode($respuesta);
+
+    if (!$obj) {
+        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error consumiendo el servicio: " . $url . "</p>"));
+    }
+
+    if (isset($obj->error)) {
+        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: " . $obj->error . "</p>"));
+    }
+
+    $_SESSION["mensaje"] = "El usuario ha sido borrado con éxito";
+    header("Location:index.php");
+    exit();
+}
+
+if (isset($_POST["btnContEditar"])) {
+    $error_nombre = $_POST["nombre"] == "" || strlen($_POST["nombre"]) > 30;
+    $error_usuario = $_POST["usuario"] == "" || strlen($_POST["usuario"]) > 20;
+    if (!$error_usuario) {
         
-        $url = DIR_SERV."/borrarUsuario";
-        $id_usuario = $_POST["btnContBorrar"];
-        
-        $respuesta = consumir_servicios_REST($url, "DELETE", $id_usuario);
+        // Si no hay error miramos si está repetido
+        $url = DIR_SERV."/repetido/usuarios/nombre/".$_POST["nombre"]."/id_usuario/".$_POST["btnContEditar"]."";
+            $respuesta = consumir_servicios_REST($url, "GET");
+            $obj = json_decode($respuesta);
+            
+            if (!$obj) {
+                die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error consumiendo el servicio: ".$url."</p>"));
+            }
+
+            if (isset($obj->error)) {
+                die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: ".$obj->error."</p>"));
+            }        
+
+        $error_usuario = $obj->repetido;
+
+        if (is_string($error_usuario)) {
+            die($error_usuario);
+        }
+
+        $error_clave = strlen($_POST["clave"]) > 15;
+        $error_email = $_POST["email"] == "" || strlen($_POST["email"]) > 50 || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
+
+        $url = DIR_SERV."/repetido/usuarios/email/".$_POST["email"];
+        $respuesta = consumir_servicios_REST($url, "GET");
         $obj = json_decode($respuesta);
-
+            
         if (!$obj) {
-            die(error_page("Crud con servicios web", "<h1>Crud con servicios web</h1>" . $respuesta));
+            die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error consumiendo el servicio: ".$url."</p>"));
         }
 
         if (isset($obj->error)) {
-            die(error_page("Crud con servicios web", "<h1>Crud con servicios web</h1>" . $obj->error));
+            die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: ".$obj->error."</p>"));
+        }        
+        
+        $error_email = $obj->repetido;
+
+        if (is_string($error_email)) {
+            die($error_email);
         }
 
-        if (isset($obj->mensaje)) {
-            echo "<p>El usuario con id: $id_usuario ha sido borrado con éxito</p>";
-        }
+        $error_form = $error_nombre || $error_usuario || $error_clave || $error_email;
 
-    }    
+        if (!$error_form) {
+            try {
+                if ($_POST["clave"] == "") {
+                    $url = DIR_SERV."/actualizarUsuarioSinClave/".$_POST["btnContEditar"];
+                    $respuesta = consumir_servicios_REST($url, "PUT");
+                    $obj = json_decode($respuesta);
+                        
+                    if (!$obj) {
+                        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error consumiendo el servicio: ".$url."</p>"));
+                    }
+
+                    if (isset($obj->error)) {
+                        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: ".$obj->error."</p>"));
+                    }
+                } else {
+                    $url = DIR_SERV."/actualizarUsuario/".$_POST["btnContEditar"];
+                    $respuesta = consumir_servicios_REST($url, "PUT");
+                    $obj = json_decode($respuesta);
+                        
+                    if (!$obj) {
+                        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error consumiendo el servicio: ".$url."</p>"));
+                    }
+
+                    if (isset($obj->error)) {
+                        die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: ".$obj->error."</p>"));
+                    }
+                }
+                mysqli_query($conexion, $consulta);
+
+            } catch (Exception $e) {                
+                session_destroy();
+                die(error_page("Práctica 1ºCRUD", "<h1>Práctica 1ºCRUD</h1><p>No se ha podido conectarse a la base de datos: " . $e->getMessage() . "</p>"));
+            }
+            
+            $_SESSION["mensaje"] = "El usuario ha sido actualizado con éxito";
+            header("Location:index.php");
+            exit;
+        }
+    }
+}
 
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crud con servicios web</title>
+    <title>Práctica 1ºCRUD SW</title>
+    <style>
+        table,
+        td,
+        th {
+            border: 1px solid black;
+        }
+
+        table {
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th {
+            background-color: #CCC;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .enlace {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        .error {
+            color: red
+        }
+
+        .mensaje {
+            color: blue;
+            font-size: 1.5em;
+        }
+    </style>
 </head>
-<style>
 
-    table{
-        text-align: center;
-    }
-
-    table, td, th{
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-
-    td{
-        padding: 1rem;
-    }
-
-    .mensaje{
-        color: blue;
-        font-size: 20px;
-    }
-
-    .enlace{
-        border: none;
-        background-color: white;
-        color: blue;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-    
-</style>
 <body>
     <h1>Listado de los usuarios</h1>
-    <form action="index.php" method="post">
-        <table>
-            <tr><th>Nombre de Usuario</th><th>Borrar</th><th>Editar</th></tr>
-            <?php 
-                // Hacemos la conexión con la base de datos
-                try {
-                    $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_foro");
-                    mysqli_set_charset($conexion, "utf8");
-                } catch (Exception $e) {                    
-                    die("<p>No has podido conectarte a la base de datos: ".$e->getMessage()." </p></body></html>");
-                }
+    <?php
+    require "vistas/vista_tabla.php";
 
-                // Hacemos el select para sacar los datos
-                try {
-                    $consulta = "select * from usuarios";
-                    $resultado = mysqli_query($conexion, $consulta);
-                } catch (Exception $e) {                    
-                    die("<p>No has podido hacer el select: ".$e->getMessage()." </p></body></html>");
-                }
+    // Si se pulsa un nombre que nos de los datos
+    if (isset($_POST["btnDetalle"])) {
 
-                while ($tupla = mysqli_fetch_assoc($resultado)) {
-                    echo "<tr>";
-                    // ¡¡¡¡¡¡¡¡¡¡¡ IMPORTANTE HACER UN FORM POR CADA BOTÓN !!!!!!!!!!!!
-                    echo "<td><form action='index.php' method='post'><button class='enlace' name='btnDetalle' value='".$tupla["id_usuario"]."'>".$tupla["nombre"]."</button></form></td>";
-                    echo "<td><form action='index.php' method='post'><input type='hidden' name='nombreOculto' value='".$tupla["nombre"]."'></input><button class='enlace' name='btnBorrar' value='".$tupla["id_usuario"]."'>X</button></form></td>";
-                    echo "<td><form action='index.php' method='post'><button class='enlace' name='btnEditar' value='".$tupla["id_usuario"]."'>~</button></form></td>";
-                    echo "</tr>";
-                }
-                  
+        require "vistas/vista_detalle.php";
 
-            ?>
-        </table><br>
-        <button type="submit" name="btnInsertar">Insertar nuevo usuario</button>
-    </form>
-    <?php             
+    } else if (isset($_POST["btnBorrar"])) {
 
-        if (isset($_POST["btnDetalle"])) {
+        require "vistas/vista_conf_borrar.php";
 
-            require "vistas/vista_detalle.php";
+    } else if (isset($_POST["btnEditar"]) || isset($_POST["btnContEditar"])) {
 
-        } else if(isset($_POST["btnBorrar"])){
+        require "vistas/vista_editar.php";
 
-            echo "<p>Se dispone a borrar al usuario ".$_POST["nombreOculto"]." con id: ".$_POST["btnBorrar"]."</p>";
-            echo "<form action='index.php' method='post'><button name='btnContBorrar' value='".$_POST["btnBorrar"]."'>Continuar</button>";
-            echo "<button name='btnAtras'>Atrás</button></form>";
+    } else {
 
-        } else if(isset($_POST["btnInsertar"])){
-            header("Location:usuario_nuevo.php");
-        }
+        require "vistas/vista_nuevo.php";
+
+    }
 
     ?>
 </body>
+
 </html>

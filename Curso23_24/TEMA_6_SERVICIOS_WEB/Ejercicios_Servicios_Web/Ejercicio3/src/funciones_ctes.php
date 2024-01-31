@@ -57,7 +57,33 @@ function obtener_usuarios(){
         return array("error"=>"No se ha podido conectar a la base de datos: ".$e->getMessage());
     }
 
-    $respuesta["productos"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $respuesta["usuarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC); // Sería $respuesta["productos"] o $respuesta["usuarios"] dependiendo??
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+// Sacar usuario por código
+function obtener_usuario($id_usuario){
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {        
+        return array("error"=>"No se ha podido conectar a la base de datos: ".$e->getMessage());
+    }
+
+    try{
+        $consulta="select * from usuarios where id_usuario=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$id_usuario]);
+    }
+    catch(PDOException $e)
+    {
+        $sentencia=null;
+        $conexion=null;
+        return array("error"=>"No se ha podido conectar a la base de datos: ".$e->getMessage());
+    }
+
+    $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
     $sentencia = null;
     $conexion = null;
     return $respuesta;
@@ -122,6 +148,38 @@ function actualizar_usuario($datos){
     return $respuesta;
 }
 
+// El actualizar usuario sin clave
+function actualizar_usuario_sin_clave($datos){
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        return array("error"=>"No se ha podido conectar a la base de datos: ".$e->getMessage());
+    }
+
+    try{
+        $consulta="update usuarios set nombre=?, usuario=?, email=? where id_usuario=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute($datos);
+    }
+    catch(PDOException $e)
+    {
+        $sentencia=null;
+        $conexion=null;
+        return array("error"=>"No se ha podido conectar a la base de datos: ".$e->getMessage());
+    }
+
+    // Esto no lo pide el enunciado, pero lo hacemos por si no existe el usuario
+    if ($sentencia->rowCount()>0) {
+        $respuesta["mensaje"] = "El usuario con id: ".$datos[3]." se ha actualizado con éxito";
+    } else {
+        $respuesta["mensaje_error"] = "El usuario con id: ".$datos[3]." no se encuentra en la base de datos";
+    }
+    
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
 // e)
 function borrar_usuario($id_usuario){
     try {
@@ -133,7 +191,7 @@ function borrar_usuario($id_usuario){
     try{
         $consulta="delete from usuarios where id_usuario=?";
         $sentencia=$conexion->prepare($consulta);
-        $sentencia->execute($id_usuario);
+        $sentencia->execute([$id_usuario]);
     }
     catch(PDOException $e)
     {
@@ -151,5 +209,61 @@ function borrar_usuario($id_usuario){
     return $respuesta;
 }
 
+// Para el crud, repetido al insertar y al editar
+function repetido($tabla, $columna, $valor){
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();        
+        return $respuesta;
+        // Esas dos se pueden hacer en una línea: return array("mensaje_error"=>"No se ha podido conectar a la base de datos: ".e->getMessage());
+    }
+
+    try{
+        $consulta="select * from $tabla where $columna = ?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$valor]);
+    }
+    catch(PDOException $e)
+    {
+        $sentencia=null;
+        $conexion=null;
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();
+        return $respuesta;
+    }
+
+    $respuesta["repetido"] = ($sentencia->rowCount())>0; // Nos devuelve true si está repetido y false si no
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+function repetido_editar($tabla, $columna, $valor, $columna_id, $valor_id){
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();        
+        return $respuesta;
+        // Esas dos se pueden hacer en una línea: return array("mensaje_error"=>"No se ha podido conectar a la base de datos: ".e->getMessage());
+    }
+
+    try{
+        $consulta="select * from $tabla where $columna = ? AND $columna_id <> ?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$valor, $valor_id]);
+    }
+    catch(PDOException $e)
+    {
+        $sentencia=null;
+        $conexion=null;
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();
+        return $respuesta;
+    }
+
+    $respuesta["repetido"] = ($sentencia->rowCount())>0; // Nos devuelve true si está repetido y false si no
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
 
 ?>
