@@ -28,7 +28,7 @@ if (isset($_POST["btnContEditar"])) {
     if (!$error_usuario) {
         
         // Si no hay error miramos si está repetido
-        $url = DIR_SERV."/repetido/usuarios/nombre/".$_POST["nombre"]."/id_usuario/".$_POST["btnContEditar"]."";
+        $url = DIR_SERV."/repetido/usuarios/usuario/".$_POST["usuario"]."/id_usuario/".$_POST["btnContEditar"]."";
             $respuesta = consumir_servicios_REST($url, "GET");
             $obj = json_decode($respuesta);
             
@@ -49,7 +49,7 @@ if (isset($_POST["btnContEditar"])) {
         $error_clave = strlen($_POST["clave"]) > 15;
         $error_email = $_POST["email"] == "" || strlen($_POST["email"]) > 50 || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
 
-        $url = DIR_SERV."/repetido/usuarios/email/".$_POST["email"];
+        $url = DIR_SERV."/repetido/usuarios/email/".$_POST["email"]."/id_usuario/".$_POST["btnContEditar"]."";
         $respuesta = consumir_servicios_REST($url, "GET");
         $obj = json_decode($respuesta);
             
@@ -73,7 +73,8 @@ if (isset($_POST["btnContEditar"])) {
             try {
                 if ($_POST["clave"] == "") {
                     $url = DIR_SERV."/actualizarUsuarioSinClave/".$_POST["btnContEditar"];
-                    $respuesta = consumir_servicios_REST($url, "PUT");
+                    $datos = array("nombre" => $_POST["nombre"], "usuario" => $_POST["usuario"], "email" => $_POST["email"]); // Metemos los atributos en un array
+                    $respuesta = consumir_servicios_REST($url, "PUT", $datos);
                     $obj = json_decode($respuesta);
                         
                     if (!$obj) {
@@ -85,7 +86,8 @@ if (isset($_POST["btnContEditar"])) {
                     }
                 } else {
                     $url = DIR_SERV."/actualizarUsuario/".$_POST["btnContEditar"];
-                    $respuesta = consumir_servicios_REST($url, "PUT");
+                    $datos = array("nombre" => $_POST["nombre"], "usuario" => $_POST["usuario"], "clave" => $_POST["clave"], "email" => $_POST["email"]); // Metemos los atributos en un array
+                    $respuesta = consumir_servicios_REST($url, "PUT", $datos);
                     $obj = json_decode($respuesta);
                         
                     if (!$obj) {
@@ -95,8 +97,7 @@ if (isset($_POST["btnContEditar"])) {
                     if (isset($obj->error)) {
                         die(error_page("Práctica 1ºCRUD SW", "<h1>Práctica 1ºCRUD SW</h1><p>Error: ".$obj->error."</p>"));
                     }
-                }
-                mysqli_query($conexion, $consulta);
+                }                
 
             } catch (Exception $e) {                
                 session_destroy();
