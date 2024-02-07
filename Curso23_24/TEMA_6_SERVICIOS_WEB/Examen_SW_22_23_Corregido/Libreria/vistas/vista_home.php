@@ -107,7 +107,13 @@
             <button type="submit" name="btnLogin">Login</button>
         </p>
     </form>
-    <?php 
+    <?php
+
+        if (isset($_SESSION["seguridad"])) {
+            echo "<p class='mensaje'>".$_SESSION["seguridad"]."</p>";
+            session_destroy();
+        }
+
         require "vista_libros.php";
     ?>    
 </body>
