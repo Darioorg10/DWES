@@ -46,9 +46,12 @@ $app->get("/logueado", function($request){
 
 // c)
 $app->post("salir", function($request){
+    // Aquí lo que hacemos es coger el token de la sesión y cerrarla para que deje de
+    // consumir recursos, por eso cogemos el id, la iniciamos y la destruimos
     $token = $request->getParam("api_session");
     session_id($token);
     session_start();
+    session_destroy();
     echo json_encode(array("log_out" => "Cerrada sesión en la API"));
 });
 
@@ -94,9 +97,6 @@ $app->get("/repetido/{tabla}/{columna}/{valor}", function($request){
     $token = $request->getParam("api_session");
     session_id($token);
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
-        $datos[] = $request->getParam("portada");
-        $datos[] = $request->getAttribute("referencia");
-
         echo json_encode(repetido($request->getAttribute("tabla"), $request->getAttribute("columna"), $request->getAttribute("valor")));
     } else {
         session_destroy();

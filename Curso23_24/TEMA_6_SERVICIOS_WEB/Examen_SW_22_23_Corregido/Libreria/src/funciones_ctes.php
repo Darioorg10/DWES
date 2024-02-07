@@ -1,7 +1,7 @@
 <?php
 
     // Vamos a definir la dirección del servicio y los minutos de inactividad
-    define("DIR_SERV", "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_SW_22_23_Corregido/servicios_rest");
+    define("DIR_SERV", "http://localhost/DWES.git/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_SW_22_23_Corregido/servicios_rest"); // Clase: http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_SW_22_23_Corregido/servicios_rest
     define("MINUTOS", 2);
 
     function consumir_servicios_REST($url,$metodo,$datos=null)
