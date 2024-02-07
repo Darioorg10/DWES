@@ -10,15 +10,36 @@
 
         // Si ningún campo está vacío vamos a intentar loguearnos
         if (!$error_form) {
-            $url = DIR_SERV."/login";
-            $clave_encriptada = md5($_POST["clave"]);
+            $url = DIR_SERV."/login";            
             $datos["lector"] = $_POST["usuario"]; // El parámetro que pide es lector
-            $datos["clave"] = $clave_encriptada;
+            $datos["clave"] = md5($_POST["clave"]);
             $respuesta = consumir_servicios_REST($url, "POST", $datos);
             $obj = json_decode($respuesta);
 
             if (!$obj) {
-                echo "<p>Error consumiendo el servicio: $url</p>";
+                session_destroy();
+                die(error_page("Examen SW 22_23", "<h1>Librería</h1><p>Error consumiendo el servicio : $url</p>"));
+            }
+
+            if (isset($obj->error)) {
+                session_destroy();
+                die(error_page("Examen SW 22_23", "<h1>Librería</h1><p>Error consumiendo el servicio : ".$obj->error."</p>"));
+            }
+
+            if (isset($obj->mensaje)) { // Cuando mandábamos un mensaje era que ese no estaba en la base de datos
+                $error_usuario = true;
+            } else { // Si es correcto el usuario y la contraseña
+                $_SESSION["usuario"] = $obj->usuario->lector;
+                $_SESSION["clave"] = $obj->usuario->clave;
+                $_SESSION["ult_accion"] = time();
+                $_SESSION["api_session"] = $obj->api_session;
+
+                if ($obj->usuario->tipo == "admin") {
+                    header("Location:admin/gest_libros.php");
+                } else {
+                    header("Location:index.php");
+                }
+
             }
 
         }
@@ -62,10 +83,14 @@
     <form action="index.php" method="post">
         <p>
             <label for="usuario">Usuario:</label>
-            <input type="text" name="usuario" id="usuario" value="<?php if(isset($_POST["btnLogin"])) echo $_POST["usuario"]; ?>">
+            <input type="text" name="usuario" id="usuario" value="<?php if(isset($_POST["usuario"])) echo $_POST["usuario"]; ?>">
             <?php 
                 if (isset($_POST["btnLogin"]) && $error_usuario) {
-                    echo "<span class='error'>*Campo obligatorio*</span>";
+                    if ($_POST["usuario"] == "") {
+                        echo "<span class='error'>*Campo obligatorio*</span>";
+                    } else {
+                        echo "<span class='error'>*Usuario/clave incorrectos*</span>";
+                    }                    
                 }
             ?>
         </p>
@@ -82,30 +107,8 @@
             <button type="submit" name="btnLogin">Login</button>
         </p>
     </form>
-    <h2>Listado de los libros</h2>
     <?php 
-        $url = DIR_SERV."/obtenerLibros";
-        $respuesta = consumir_servicios_REST($url, "GET");
-        $obj = json_decode($respuesta);
-
-        if (!$obj) {
-            session_destroy();
-            die("<p>Error consumiendo el servicio: $url</p></body></html>");
-        }
-
-        if (isset($obj->error)) {
-            session_destroy();
-            die("<p>".$obj->error."</p></body></html>");
-        }
-
-        echo "<div id='libros'>";
-        foreach ($obj->libros as $tupla) {
-            echo "<div>";
-            echo "<img src='images/".$tupla->portada."' alt='portada' title='portada'>".$tupla->titulo." - ".$tupla->precio." €";
-            echo "</div>";
-        }
-        echo "</div>";
-
-    ?>
+        require "vista_libros.php";
+    ?>    
 </body>
 </html>

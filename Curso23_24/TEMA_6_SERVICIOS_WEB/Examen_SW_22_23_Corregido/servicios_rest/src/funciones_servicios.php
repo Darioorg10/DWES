@@ -92,12 +92,6 @@ function logueado($lector, $clave){
     // Si devuelve algún resultado la consulta
     if ($sentencia->rowCount()>0) {
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
-        session_name("examen_sw_22-23");
-        session_start();
-        $_SESSION["usuario"] = $respuesta["usuario"]["lector"];
-        $_SESSION["clave"] = $respuesta["usuario"]["clave"];
-        $_SESSION["tipo"] = $respuesta["usuario"]["tipo"];
-        $respuesta["api_session"] = session_id();
     } else {
         $respuesta["mensaje"] = "El usuario no se encuentra registrado en la base de datos";
     }

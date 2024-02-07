@@ -38,6 +38,7 @@ $app->get("/logueado", function($request){
     if (isset($_SESSION["usuario"])) {
         echo json_encode(logueado($_SESSION["usuario"], $_SESSION["clave"]));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio"));
     }
 
@@ -68,6 +69,7 @@ $app->post("/crearLibro", function($request){
 
         echo json_encode(insertar_libro($datos));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio"));
     }
 });
@@ -82,6 +84,7 @@ $app->put("/actualizarPortada/{referencia}", function($request){
 
         echo json_encode(actualizarPortada($datos));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio"));
     }
 });
@@ -96,6 +99,7 @@ $app->get("/repetido/{tabla}/{columna}/{valor}", function($request){
 
         echo json_encode(repetido($request->getAttribute("tabla"), $request->getAttribute("columna"), $request->getAttribute("valor")));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio"));
     }
 });
