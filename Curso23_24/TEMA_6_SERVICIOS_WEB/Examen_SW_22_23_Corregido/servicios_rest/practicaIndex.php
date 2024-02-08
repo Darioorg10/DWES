@@ -67,7 +67,7 @@ $app->post("/crearLibro", function($request){
 
     $token = $request->getParam("api_session");
     session_id($token);
-
+    session_start();
     // Solo vamos a poder insertar libros cuando seamos admin
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
         $datos[] = $request->getParam("referencia");
@@ -89,7 +89,7 @@ $app->put("/actualizarPortada{referencia}", function($request){
 
     $token = $request->getParam("api_session");
     session_id($token);    
-
+    session_start();
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
         
         $datos[] = $request->getParam("nombre_nuevo");
@@ -109,7 +109,7 @@ $app->put("/actualizarPortada{referencia}", function($request){
 $app->get("/repetido/{tabla}/{columna}/{valor}", function($request){
     $token = $request->getParam("api_session");
     session_id($token);    
-
+    session_start();
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
         echo json_encode(repetido($request->getAttribute("tabla"), $request->getAttribute("columna"), $request->getAttribute("valor")));
     } else {
