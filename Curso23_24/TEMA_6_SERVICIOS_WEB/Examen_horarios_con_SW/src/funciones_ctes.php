@@ -1,6 +1,10 @@
 <?php     
 
-    define("DIR_SERV", "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest");
+    // Clase: http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest
+    // Casa: http://localhost/DWES.git/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest
+
+    define("DIR_SERV", "http://localhost/DWES.git/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest");
+    define("MINUTOS", 2);
 
     function consumir_servicios_REST($url,$metodo,$datos=null)
     {

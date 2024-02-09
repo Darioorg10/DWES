@@ -22,11 +22,24 @@ $app->get("/login", function($request){
 });
 
 $app->get("/logueado", function($request){
+    $token = $request->getParam("api_session"); // Comprobamos que el usuario con ese token esté logueado
+    session_id($token);
+    session_start();
+
+    if (isset($_SESSION["usuario"])) {
+        echo json_encode(logueado($_SESSION["usuario"], $_SESSION["clave"]));
+    } else {
+        echo json_encode(array("no_auth" => "No estás autorizado para hacer esto"));
+    }
 
 });
 
-$app->get("/salir", function($request){
-
+$app->post("/salir", function($request){
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+    session_destroy(); // Destruimos la sesión
+    echo json_encode(array("log_out" => "Has cerrado sesión en la api"));
 });
 
 
