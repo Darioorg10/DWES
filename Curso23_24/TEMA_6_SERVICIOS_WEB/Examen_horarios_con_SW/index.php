@@ -5,6 +5,7 @@
 
     require "src/funciones_ctes.php";
 
+    // Si le damos al botón de login
     if (isset($_POST["btnLogin"])) {
         
         $error_usuario = $_POST["usuario"] == "";
@@ -46,6 +47,7 @@
 
     }
 
+    // Si le damos al botón de salir
     if (isset($_POST["btnSalir"])) {
         $url = DIR_SERV."/salir";
         $datos["api_session"] = $_SESSION["api_session"];
@@ -65,7 +67,23 @@
         <title>Examen2 PHP</title>
         <style>
             .error{color: red}
-            .mensaje{font-size: 14px; color: blue;}
+            .mensaje{font-size: 16px; color: blue;}
+            .centrado{text-align: center; font-weight: bold;}
+
+            table{
+                width: 80%;
+                margin: 0 auto;
+                border-collapse: collapse;
+            }
+
+            td, th, tr{
+                border: 1px solid black;
+            }
+
+            th{
+                background-color: #CCC;
+            }
+
         </style>
     </head>
     <body>
@@ -110,12 +128,104 @@
             if (isset($_SESSION["usuario"])) {
                 require "src/seguridad.php";
                 if ($datos_usuario_log->tipo == "admin") {
-                    echo "<h1>Vista admin</h1>";                    
-                    echo "<form action='index.php' method='post'><button name='btnSalir'>Salir</button></form>";
+                    echo "<h1>Vista admin</h1>";                                       
                     if (isset($_SESSION["seguridad"])) {
                         echo "<span class='mensaje'>".$_SESSION["seguridad"]."</span>";
                         session_destroy();
                     }
+
+                    // Mostramos todos los nombres en un select
+                    $url = DIR_SERV."/obtenerNombres";
+                    $respuesta = consumir_servicios_REST($url, "GET");
+                    $obj = json_decode($respuesta);
+
+                    if (!$obj) {
+                        session_destroy();
+                        die(error_page("Examen horarios con sw", "<p>Ha habido un error</p></body></html>"));
+                    }
+        
+                    if (isset($obj->error)) {
+                        session_destroy();
+                        die(error_page("Examen horarios con sw", "<p>Ha habido un error: ".$obj->error."</p></body></html>"));
+                    }                    
+
+                    ?>
+
+                    <h2>Horario de los profesores</h2>
+                    <form action="index.php" method="post">
+                    <p>Horario del profesor:                    
+                        <select name="selNombres" id="selNombres">
+                            <?php
+                                foreach ($obj->nombres as $tupla) {
+                                    if ($_POST["selNombres"] == $tupla->nombre) {
+                                        echo "<option selected>".$tupla->nombre."</option>";
+                                    } else {
+                                        echo "<option>".$tupla->nombre."</option>";
+                                    }                                    
+                                }
+                            ?>
+                        </select>
+                        <button name="btnVerHorario" id="btnVerHorario">Ver horario</button>
+                    </form>                        
+                    </p>
+
+                    <?php
+                    // Si le damos al botón de ver horario
+                    if (isset($_POST["btnVerHorario"])) {
+                        echo "<p class='centrado'>Horario del profesor: ".$_POST["selNombres"]."</p>";
+
+                        // Vamos a sacar la id con el nombre
+                        $url = DIR_SERV."/obtenerIdProfesor";
+                        $datos["nombre"] = $_POST["selNombres"];
+                        $respuesta = consumir_servicios_REST($url, "GET", $datos);
+                        $obj = json_decode($respuesta);
+
+                        if (!$obj) {
+                            session_destroy();
+                            die(error_page("Examen horarios con sw", "<p>Ha habido un error</p></body></html>"));
+                        }
+            
+                        if (isset($obj->error)) {
+                            session_destroy();
+                            die(error_page("Examen horarios con sw", "<p>Ha habido un error: ".$obj->error."</p></body></html>"));
+                        }
+
+                        $id_profesor = $obj->usuarios->id_usuario;                        
+                        
+                        // Vamos a sacar el horario con la id
+                        $url = DIR_SERV."/obtenerHorarioProfesor";
+                        $datos["id_profesor"] = $id_profesor;
+                        $respuesta = consumir_servicios_REST($url, "GET", $datos);
+                        $obj = json_decode($respuesta);
+
+                        if (!$obj) {
+                            session_destroy();
+                            die(error_page("Examen horarios con sw", "<p>Ha habido un error</p></body></html>"));
+                        }
+            
+                        if (isset($obj->error)) {
+                            session_destroy();
+                            die(error_page("Examen horarios con sw", "<p>Ha habido un error: ".$obj->error."</p></body></html>"));
+                        }                        
+
+                        
+
+                        echo "<table>";
+                        echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th></tr>";
+                        echo "<tr><th>8:15 - 9:15</th></tr>";
+                        echo "<tr><th>9:15 - 10:15</th></tr>";
+                        echo "<tr><th>10:15 - 11:15</th></tr>";
+                        echo "<tr><th>11:15 - 11:45</th></tr>";
+                        echo "<tr><th>11:45 - 12:45</th></tr>";
+                        echo "<tr><th>12:45 - 13:45</th></tr>";
+                        echo "<tr><th>13:45 - 14:45</th></tr>";
+                        echo "</table>";
+
+                    }
+
+
+
+                    echo "<form action='index.php' method='post'><button name='btnSalir'>Salir</button></form>";
                 } else {
                     echo "<h1>Vista normal</h1>";
                 }

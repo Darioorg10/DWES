@@ -107,4 +107,94 @@ function logueado($usuario, $clave){
     return $respuesta;
 }
 
+// Función para obtener los nombres de todos los profesores
+function obtenerNombres(){
+    // Abrimos la conexión
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try {
+        $consulta = "select * from usuarios";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute();
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
+        $conexion = null;
+        $sentencia = null;
+        return $respuesta;
+    }
+
+    // En este caso hacemos un fetchAll porque nos va a devolver más de una tupla
+    $respuesta["nombres"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    $conexion = null;
+    $sentencia = null;
+    return $respuesta;
+
+
+}
+
+// Función para saber la id del profesor con el nombre
+function obtenerIdProfesor($nombre){
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try {
+        $consulta = "select * from usuarios where nombre=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$nombre]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
+        $conexion = null;
+        $sentencia = null;
+        return $respuesta;
+    }
+
+    // En este caso hacemos un fetchAll porque nos puede devolver más de una tupla
+    $respuesta["usuarios"] = $sentencia->fetch(PDO::FETCH_ASSOC);
+
+    $conexion = null;
+    $sentencia = null;
+    return $respuesta;
+}
+
+// Función para obtener el horario de un profesor con su id
+function obtenerHorarioProfesor($id_profesor){
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try {
+        $consulta = "select * from horario_lectivo where usuario=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$id_profesor]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
+        $conexion = null;
+        $sentencia = null;
+        return $respuesta;
+    }
+
+    // En este caso hacemos un fetchAll porque nos puede devolver más de una tupla
+    $respuesta["horarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    $conexion = null;
+    $sentencia = null;
+    return $respuesta;
+}
+
 ?>

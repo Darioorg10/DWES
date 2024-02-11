@@ -42,6 +42,20 @@ $app->post("/salir", function($request){
     echo json_encode(array("log_out" => "Has cerrado sesión en la api"));
 });
 
+$app->get("/obtenerNombres", function(){
+    echo json_encode(obtenerNombres());
+});
+
+$app->get("/obtenerIdProfesor", function($request){
+    $nombre = $request->getParam("nombre");
+    echo json_encode(obtenerIdProfesor($nombre));
+});
+
+$app->get("/obtenerHorarioProfesor", function($request){
+    $id_profesor = $request->getParam("id_profesor");
+    echo json_encode(obtenerHorarioProfesor($id_profesor));
+});
+
 
 // Una vez creado servicios los pongo a disposición
 $app->run();
