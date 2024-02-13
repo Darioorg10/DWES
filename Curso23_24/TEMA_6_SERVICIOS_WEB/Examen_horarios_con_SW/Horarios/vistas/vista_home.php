@@ -10,7 +10,7 @@
 
         // Si ningún campo está vacío vamos a intentar loguearnos
         if (!$error_form) {
-            $url = DIR_SERV."/login";            
+            $url = DIR_SERV."/login";
             $datos["usuario"] = $_POST["usuario"];
             $datos["clave"] = md5($_POST["clave"]);
             $respuesta = consumir_servicios_REST($url, "GET", $datos);

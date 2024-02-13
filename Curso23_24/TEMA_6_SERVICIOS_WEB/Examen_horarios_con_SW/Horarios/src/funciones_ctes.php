@@ -1,10 +1,6 @@
-<?php     
-
-    // Clase: http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest
-    // Casa: http://localhost/DWES.git/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest
-
-    define("DIR_SERV", "http://localhost/DWES.git/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest");
-    define("MINUTOS", 2);
+<?php 
+    define("DIR_SERV", "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_corregido_con_sw/servicios_rest");
+    define("MINUTOS", 5);
 
     function consumir_servicios_REST($url,$metodo,$datos=null)
     {
@@ -18,7 +14,7 @@
         curl_close($llamada);
         return $respuesta;
     }
-
+    
     function error_page($title,$body)
     {
         $html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -26,5 +22,4 @@
         $html.='<body>'.$body.'</body></html>';
         return $html;
     }
-
 ?>

@@ -35,13 +35,11 @@ function conexion_mysqli()
 }
 
 function login($usuario, $clave){
-    // Primero abrimos la conexión
     try{
-        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));              
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
     }
     catch(PDOException $e){
-        $respuesta["error"]="Imposible conectar:".$e->getMessage();
-        return $respuesta;
+        $respuesta["error"]="Imposible conectar: ".$e->getMessage();
     }
 
     try {
@@ -49,37 +47,35 @@ function login($usuario, $clave){
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$usuario, $clave]);
     } catch (PDOException $e) {
-        $respuesta["error"] = "Error al hacer la consulta: ".$e->getMessage();
+        $respuesta["error"] = "Imposible realizar la consulta: ".$e->getMessage();
         $sentencia = null;
         $conexion = null;
         return $respuesta;
-    }    
+    }
 
-    if ($sentencia->rowCount()>0) {        
+    if ($sentencia->rowCount()>0) {
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
-        session_name("funciones-examen-horario-sw-23-24");
+        session_name("Examen2_23_24_SW_corregido");
         session_start();
-        $_SESSION["usuario"] = $respuesta["usuario"]["usuario"]; // Queremos guardar el usuario, la clave y el tipo
+        $_SESSION["usuario"] = $respuesta["usuario"]["usuario"];
         $_SESSION["clave"] = $respuesta["usuario"]["clave"];
         $_SESSION["tipo"] = $respuesta["usuario"]["tipo"];
         $respuesta["api_session"] = session_id();
     } else {
-        $respuesta["mensaje"] = "El usuario no se encuentra registrado en la base de datos";
+        $respuesta["mensaje"] = "El usuario ya no se encuentra registrado en la base de datos";
     }
 
-
-    $sentencia = null;
     $conexion = null;
+    $sentencia = null;
     return $respuesta;
+
 }
 
 function logueado($usuario, $clave){
-    // Primero abrimos la conexión
-    try{
+    try {
         $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
-    }
-    catch(PDOException $e){
-        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido conectar:".$e->getMessage();
         return $respuesta;
     }
 
@@ -88,33 +84,29 @@ function logueado($usuario, $clave){
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$usuario, $clave]);
     } catch (PDOException $e) {
-        $respuesta["error"] = "Error al hacer la consulta: ".$e->getMessage();
+        $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
         $sentencia = null;
         $conexion = null;
         return $respuesta;
-    }    
+    }
 
-    // Solo queremos saber si el usuario con nuestra api_session está logueado
-    if ($sentencia->rowCount()>0) {        
+    // Si devuelve algún resultado la consulta
+    if ($sentencia->rowCount()>0) {
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
     } else {
         $respuesta["mensaje"] = "El usuario no se encuentra registrado en la base de datos";
     }
-
-
     $sentencia = null;
     $conexion = null;
     return $respuesta;
 }
 
-// Función para obtener los nombres de todos los profesores
-function obtenerNombres(){
-    // Abrimos la conexión
-    try{
+// Vamos a coger todos los usuarios (hasta los admin)
+function obtener_usuarios(){
+    try {
         $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
-    }
-    catch(PDOException $e){
-        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido conectar:".$e->getMessage();
         return $respuesta;
     }
 
@@ -123,78 +115,47 @@ function obtenerNombres(){
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute();
     } catch (PDOException $e) {
-        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
-        $conexion = null;
+        $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
         $sentencia = null;
+        $conexion = null;
         return $respuesta;
     }
 
-    // En este caso hacemos un fetchAll porque nos va a devolver más de una tupla
-    $respuesta["nombres"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $respuesta["usuarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
-    $conexion = null;
     $sentencia = null;
+    $conexion = null;
     return $respuesta;
-
 
 }
 
-// Función para saber la id del profesor con el nombre
-function obtenerIdProfesor($nombre){
-    try{
+// Vamos a obtener el horario de un profesor
+function obtener_horario($id_usuario){
+    try {
         $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
-    }
-    catch(PDOException $e){
-        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido conectar:".$e->getMessage();
         return $respuesta;
     }
 
     try {
-        $consulta = "select * from usuarios where nombre=?";
+        $consulta = "SELECT horario_lectivo.*, grupos.nombre FROM horario_lectivo, grupos WHERE horario_lectivo.grupo = grupos.id_grupo and horario_lectivo.usuario = ?;"; // Cogemos todo lo de horario (horario_lectivo.*)
         $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$nombre]);
+        $sentencia->execute([$id_usuario]);
     } catch (PDOException $e) {
-        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
-        $conexion = null;
+        $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
         $sentencia = null;
+        $conexion = null;
         return $respuesta;
     }
 
-    // En este caso hacemos un fetchAll porque nos puede devolver más de una tupla
-    $respuesta["usuarios"] = $sentencia->fetch(PDO::FETCH_ASSOC);
+    $respuesta["horario"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
-    $conexion = null;
     $sentencia = null;
+    $conexion = null;
     return $respuesta;
+
 }
 
-// Función para obtener el horario de un profesor con su id
-function obtenerHorarioProfesor($id_profesor){
-    try{
-        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
-    }
-    catch(PDOException $e){
-        $respuesta["error"]="Imposible conectar:".$e->getMessage();
-        return $respuesta;
-    }
-
-    try {
-        $consulta = "select * from horario_lectivo where usuario=?";
-        $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$id_profesor]);
-    } catch (PDOException $e) {
-        $respuesta["error"] = "No se ha podido realizar la consulta: ".$e->getMessage();
-        $conexion = null;
-        $sentencia = null;
-        return $respuesta;
-    }
-
-    // En este caso hacemos un fetchAll porque nos puede devolver más de una tupla
-    $respuesta["horarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-
-    $conexion = null;
-    $sentencia = null;
-    return $respuesta;
-}
 
 ?>

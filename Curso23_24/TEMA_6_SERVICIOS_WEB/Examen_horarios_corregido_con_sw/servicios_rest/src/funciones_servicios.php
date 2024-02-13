@@ -101,7 +101,8 @@ function logueado($usuario, $clave){
     return $respuesta;
 }
 
-function obtenerProfesoresNoAdmin(){
+// Vamos a coger todos los usuarios (hasta los admin)
+function obtener_usuarios(){
     try {
         $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
     } catch (PDOException $e) {
@@ -110,7 +111,7 @@ function obtenerProfesoresNoAdmin(){
     }
 
     try {
-        $consulta = "select * from usuarios where tipo='normal'";
+        $consulta = "select * from usuarios";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute();
     } catch (PDOException $e) {
@@ -120,7 +121,35 @@ function obtenerProfesoresNoAdmin(){
         return $respuesta;
     }
 
-    $respuesta["profesor"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $respuesta["usuarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+
+}
+
+// Vamos a obtener el horario de un profesor
+function obtener_horario($id_usuario){
+    try {
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try {
+        $consulta = "SELECT horario_lectivo.*, grupos.nombre FROM horario_lectivo, grupos WHERE horario_lectivo.grupo = grupos.id_grupo and horario_lectivo.usuario = ?;"; // Cogemos todo lo de horario (horario_lectivo.*)
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$id_usuario]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
+        $conexion = null;
+        return $respuesta;
+    }
+
+    $respuesta["horario"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
     $sentencia = null;
     $conexion = null;
