@@ -330,9 +330,9 @@
                         if (isset($_SESSION["mensaje_accion"])) {
                             echo "<p class='mensaje'>".$_SESSION["mensaje_accion"]."</p>";
                             unset($_SESSION["mensaje_accion"]);
-                            unset($_SESSION["dia"]);
-                            unset($_SESSION["hora"]);
                             unset($_SESSION["profesor"]);
+                            unset($_SESSION["dia"]);
+                            unset($_SESSION["hora"]);                            
                         }
 
                         // Vamos a hacer la tabla que muestra los grupos y nos deja borrarlos
