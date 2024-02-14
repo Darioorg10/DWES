@@ -1,5 +1,5 @@
 <?php 
-    define("DIR_SERV", "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_corregido_con_sw/servicios_rest");
+    define("DIR_SERV", "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Examen_horarios_con_SW/servicios_rest");
     define("MINUTOS", 5);
 
     function consumir_servicios_REST($url,$metodo,$datos=null)

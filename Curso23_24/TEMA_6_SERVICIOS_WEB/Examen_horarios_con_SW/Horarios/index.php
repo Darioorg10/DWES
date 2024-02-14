@@ -1,6 +1,6 @@
 <?php
 
-    session_name("Examen_horarios_23_24_SW_corregido");
+    session_name("Examen_horarios_23_24_SW_s");
     session_start();
 
     require "src/funciones_ctes.php";

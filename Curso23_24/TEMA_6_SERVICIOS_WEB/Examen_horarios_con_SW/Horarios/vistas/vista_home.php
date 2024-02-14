@@ -64,7 +64,7 @@
     </style>
 </head>
 <body>
-    <h1>Librería</h1>
+    <h1>Horarios</h1>
     <form action="index.php" method="post">
         <p>
             <label for="usuario">Usuario:</label>

@@ -64,7 +64,7 @@
     </style>
 </head>
 <body>
-    <h1>Librería</h1>
+    <h1>Horarios</h1>
     <div>Bienvenido <strong><?php echo $datos_usuario_log->usuario; ?></strong> -
         <form class='enlinea' action="index.php" method="post">
             <button class='enlace' type="submit" name="btnSalir">Salir</button>

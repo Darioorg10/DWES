@@ -55,7 +55,7 @@ function login($usuario, $clave){
 
     if ($sentencia->rowCount()>0) {
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
-        session_name("Examen2_23_24_SW_corregido");
+        session_name("Examen2_23_24_a_corregido");
         session_start();
         $_SESSION["usuario"] = $respuesta["usuario"]["usuario"];
         $_SESSION["clave"] = $respuesta["usuario"]["clave"];
