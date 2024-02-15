@@ -25,6 +25,7 @@ $app->post("/logueado", function ($request) {
     if (isset($_SESSION["usuario"])) {
         echo json_encode(logueado($_SESSION["usuario"], $_SESSION["clave"]));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio."));
     }
 });
@@ -46,6 +47,7 @@ $app->get("/obtenerHorario", function ($request) {
     if (isset($_SESSION["usuario"])) {
         echo json_encode(obtener_horario($id_usuario));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio."));
     }
 });
@@ -58,6 +60,7 @@ $app->get("/obtenerGuardias", function ($request) {
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
         echo json_encode(obtener_guardias($dia));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio."));
     }
 });
@@ -70,6 +73,7 @@ $app->get("/obtenerProfesor", function ($request) {
     if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "admin") {
         echo json_encode(obtener_profesor($id_usuario));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio."));
     }
 });
