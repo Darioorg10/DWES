@@ -144,7 +144,7 @@ function obtener_notas_no_eval_alumno($cod_alu){
     }
 
     try {
-        $consulta = "select * from asignaturas where cod_asig not in (select asignaturas.cod_asig notas where asignaturas.cod_asig = notas.cod_asig and notas.cod_usu = ?)";
+        $consulta = "select * from asignaturas where cod_asig not in (select asignaturas.cod_asig from notas where asignaturas.cod_asig = notas.cod_asig and notas.cod_usu = ?);";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$cod_alu]);
     } catch (PDOException $e) {
@@ -172,7 +172,7 @@ function quitar_nota($datos){
     try {
         $consulta = "delete from notas where cod_asig = ? and cod_usu = ?";
         $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$datos]);
+        $sentencia->execute($datos);
     } catch (PDOException $e) {
         $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
         $sentencia = null;
@@ -198,7 +198,33 @@ function cambiar_nota($datos){
     try {
         $consulta = "update notas set nota=? where cod_asig=? and cod_usu?";
         $sentencia = $conexion->prepare($consulta);
-        $sentencia->execute([$datos]);
+        $sentencia->execute($datos);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
+        $conexion = null;
+        return $respuesta;
+    }
+
+    $respuesta["mensaje"] = "Nota cambiada con éxito";
+    
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+function poner_nota($datos){
+    try {
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido conectar:".$e->getMessage();
+        return $respuesta;
+    }
+
+    try {
+        $consulta = "insert into notas (cod_asig, cod_usu, nota) values(?, ?, 0.0)";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute($datos);
     } catch (PDOException $e) {
         $respuesta["error"] = "No se ha podido realizar la consulta:".$e->getMessage();
         $sentencia = null;

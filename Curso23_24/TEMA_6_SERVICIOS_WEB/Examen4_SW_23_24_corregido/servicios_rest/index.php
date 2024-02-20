@@ -115,6 +115,21 @@ $app->put('/cambiarNota/{cod_alu}',function($request){
     }    
 });
 
+$app->post('/ponerNota/{cod_alu}',function($request){
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+
+    if (isset($_SESSION["usuario"]) && $_SESSION["tipo"] == "tutor") {        
+        $datos[] = $request->getParam("cod_asig");
+        $datos[] = $request->getAttribute("cod_alu");
+        echo json_encode(poner_nota($datos));
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "No tienes permisos para utilizar este servicio"));
+    }    
+});
+
 
 // Una vez creado servicios los pongo a disposición
 $app->run();
