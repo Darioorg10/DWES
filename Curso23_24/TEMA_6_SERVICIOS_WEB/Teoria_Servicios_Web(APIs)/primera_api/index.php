@@ -22,7 +22,7 @@ $app->get('/saludo/{nombre}', function($request){ // En este caso vamos a hacer 
 
 // Ahora con post, no está repetido porque este es post y el anterior get, aquí vamos a recoger el parámetro sin que sea visible (sin que esté en la url)
 $app->post('/saludo', function($request){
-    $valor_recibido = $request->getParam('nombre'); // En los post hay que llamarlo con el getParam, porque viene "por abajo" y no por la url
+    $valor_recibido = $request->getParam('name'); // En los post hay que llamarlo con el getParam, porque viene "por abajo" y no por la url
     $respuesta["mensaje"] = "Hola ".$valor_recibido;
     echo json_encode($respuesta);
 });
