@@ -13,7 +13,7 @@ function obtener_productos() {
 
             // Vamos a crear una tabla con los productos
             let tabla_productos = "<table>";
-            tabla_productos += "<tr><th>COD</th><th>Nombre corto</th><th>PVP</th><th>Acción</th></tr>"
+            tabla_productos += "<tr><th>COD</th><th>Nombre corto</th><th>PVP</th><th><button class='enlace'>Producto+</button></th></tr>"
 
             // Recorremos el json
             $.each(data.productos, function(key, tupla) { 
