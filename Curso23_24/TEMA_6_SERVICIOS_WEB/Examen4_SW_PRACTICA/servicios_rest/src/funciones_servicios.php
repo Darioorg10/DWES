@@ -158,7 +158,7 @@ function NotasNoEvalAlumno($cod_alu)
 
 
     try {
-        $consulta = "select * from asignaturas where cod_asig not in (select asignaturas.cod_asig from asignaturas, notas where asignaturas.cod_asig = notas.cod_asig and notas.cod_usu = ?)";
+        $consulta = "select * from asignaturas where asignaturas.cod_asig not in (select asignaturas.cod_asig from asignaturas, notas where asignaturas.cod_asig = notas.cod_asig and cod_usu=?)";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute([$cod_alu]);
     } catch (PDOException $e) {
@@ -168,6 +168,87 @@ function NotasNoEvalAlumno($cod_alu)
     }
 
     $respuesta["notas"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+// g)
+function quitarNota($cod_asig, $cod_alu){
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    }
+
+
+    try {
+        $consulta = "delete from notas where cod_asig=? and cod_usu=? ";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$cod_asig, $cod_alu]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta";
+        $sentencia = null;
+        $conexion = null;
+    }
+
+    $respuesta["mensaje"] = "Asignatura descalificada con éxito";
+
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+// h)
+function ponerNota($cod_asig, $cod_alu){
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    }
+
+
+    try {
+        $consulta = "insert into 'notas'('cod_asig', 'cod_usu', 'nota') values (?,?,0)";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$cod_asig, $cod_alu]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta";
+        $sentencia = null;
+        $conexion = null;
+    }
+
+    $respuesta["mensaje"] = "Asignatura descalificada con éxito";
+
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
+// i)
+function cambiarNota($nota, $cod_asig, $cod_alu){
+    try{
+        $conexion= new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES 'utf8'"));
+    }
+    catch(PDOException $e){
+        $respuesta["error"]="Imposible conectar:".$e->getMessage();
+    }
+
+
+    try {
+        $consulta = "update notas set nota = ? where cod_asig=? and cod_usu=?";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute([$nota, $cod_asig, $cod_alu]);
+    } catch (PDOException $e) {
+        $respuesta["error"] = "No se ha podido realizar la consulta";
+        $sentencia = null;
+        $conexion = null;
+    }
+
+    $respuesta["mensaje"] = "Asignatura descalificada con éxito";
 
     $sentencia = null;
     $conexion = null;
