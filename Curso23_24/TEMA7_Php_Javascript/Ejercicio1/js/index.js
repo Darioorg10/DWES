@@ -1,64 +1,186 @@
 const DIR_SERV = "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Ejercicios_Servicios_Web/Ejercicio1/servicios_rest"
 
+
+$(document).ready(function(){
+
+    obtener_productos(); // Nada más empezar queremos mostrar la tabla con los productos
+
+})
+
+function error_ajax_jquery( jqXHR, textStatus) 
+{
+    var respuesta;
+    if (jqXHR.status === 0) {
+  
+      respuesta='Not connect: Verify Network.';
+  
+    } else if (jqXHR.status == 404) {
+  
+      respuesta='Requested page not found [404]';
+  
+    } else if (jqXHR.status == 500) {
+  
+      respuesta='Internal Server Error [500].';
+  
+    } else if (textStatus === 'parsererror') {
+  
+      respuesta='Requested JSON parse failed.';
+  
+    } else if (textStatus === 'timeout') {
+  
+      respuesta='Time out error.';
+  
+    } else if (textStatus === 'abort') {
+  
+      respuesta='Ajax request aborted.';
+  
+    } else {
+  
+      respuesta='Uncaught Error: ' + jqXHR.responseText;
+  
+    }
+
+    return respuesta;
+}
+
 // Vamos a hacer la tabla con los productos
 function obtener_productos() {
     $.ajax({        
         url: DIR_SERV + "/productos",
         dataType: "json",
         type: "GET",
+
     }).done(function(data){
         if (data.mensaje_error) {
-            $("#respuesta").html(data.mensaje_error)
+            $("#errores").html(data.mensaje_error)
+            $("#principal").html("")
         } else {
-
             // Vamos a crear una tabla con los productos
-            let tabla_productos = "<table>";
-            tabla_productos += "<tr><th>COD</th><th>Nombre corto</th><th>PVP</th><th><button class='enlace'>Producto+</button></th></tr>"
+            var html_tabla_prod = "<table class='centrado'>"
+            html_tabla_prod += "<tr><th>COD</th><th>Nombre</th><th>PVP</th><th><button onclick='montar_form_crear()' class='enlace'>Productos+</button></th></tr>"
+            
+            $.each(data.productos, function(key, tupla){
+                html_tabla_prod += "<tr>"
+                html_tabla_prod += "<td><button class='enlace' onclick='detalles(\""+ tupla["cod"] +"\")'>"+ tupla["cod"] +"</button></td>"
+                html_tabla_prod += "<td>"+ tupla["nombre_corto"] +"</td>"
+                html_tabla_prod += "<td>"+ tupla["PVP"] +"</td>"
+                html_tabla_prod += "<td>Borrar - Editar</td>"
 
-            // Recorremos el json
-            $.each(data.productos, function(key, tupla) { 
-                tabla_productos += "<tr>";
-               //`<td><button class='enlace clickar' onclick='obtener_detalles("${tupla["cod"]}")'>  ${tupla["cod"]}  </button></td>`"               
-                tabla_productos += `<td><button name='btnDetalles' class='enlace' onclick='obtener_detalles("${tupla.cod}")'>  ${tupla.cod}  </button></td>`;
-                tabla_productos += "<td>" + tupla["nombre_corto"] + "</td>";
-                tabla_productos += "<td>" + tupla["PVP"] + "</td>";
-                tabla_productos += `<td><button name='btnBorrar' class='enlace' onclick='borrar_producto("${tupla.cod}")'>Borrar</button> - <button class='enlace'>Editar</button></td>`;
-                tabla_productos += "</tr>";
-            });
-            tabla_productos += "</table>";
-            $("#respuesta").html(tabla_productos);
+                html_tabla_prod += "</tr>"
+            })
+
+            html_tabla_prod+="</table>"
+
+
+            $("#errores").html("")
+            $("#respuestas").html("")
+            $("#productos").html(html_tabla_prod);
         }
+
+    }).fail(function(a,b){
+        $("#errores").html(error_ajax_jquery(a,b))
+        $("#principal").html("")
     })
 }
 
 // Vamos a mostrar la información del producto sobre el que se dé click
-function obtener_detalles(cod) {
+function detalles(cod) {
     $.ajax({        
-        url: DIR_SERV + "/producto/" + cod,
+        url:encodeURI(DIR_SERV + "/producto/" + cod),
         dataType: "json",
         type: "GET",
+
     }).done(function(data){
         if (data.mensaje_error) {
-            $("#respuesta").html(data.mensaje_error)
-        } else {            
+            $("#errores").html(data.mensaje_error)
+            $("#principal").html("")
+        } else if(data.mensaje) {
+            $("#errores").html("")
+            $("#respuestas").html("<p>El producto con cod: <strong>"+ cod +"</strong> ya no se encuentra en la base de datos</p>")
+            obtener_productos()
+        } else {
 
-            // Que no se muestren mensajes si se han puesto
-            $("#mensaje").html("")
+            var familia;
+            $.ajax({        
+                url: encodeURI(DIR_SERV + "/familia/" + data.producto["familia"]),
+                dataType: "json",
+                type: "GET",
+        
+            }).done(function(data2){
 
-            // Vamos a crear una tabla con los productos
-            var detalles = "<strong>INFORMACIÓN DEL PRODUCTO: </strong>" + data.producto[0].cod;
-            $("#detallitos").html(detalles);
+                if (data2.mensaje_error) {
+                    $("#errores").html(data2.mensaje_error)
+                    $("#principal").html("")
+                } else {
+                    var html_respuesta = "<h2>Información del producto: "+ cod +"</h2>"
+                    html_respuesta += "<p><strong>Nombre: </strong>"
+                    if (data.producto["nombre"]) {
+                        html_respuesta += data.producto["nombre"]
+                    }
+                    html_respuesta += "</p>"
 
-            var info = "";            
-            info += "<p><strong>Nombre:</strong> " + (data.producto[0].nombre ?? "") + "</p>"; // Lo del ?? sirve por si no existe (es null), para que aparezca vacío en vez de null
-            info += "<p><strong>Nombre corto:</strong> " + data.producto[0].nombre_corto + "</p>";
-            info += "<p><strong>Descripción:</strong> " + data.producto[0].descripcion + "</p>";
-            info += "<p><strong>PVP:</strong> " + data.producto[0].PVP + "</p>";
+                    html_respuesta += "<p><strong>Nombre corto: </strong>"+data.producto["nombre_corto"] + "</p>"
+                    html_respuesta += "<p><strong>Descripción: </strong>"
+                    if (data.producto["descripcion"]) {
+                        html_respuesta += data.producto["descripcion"]
+                    }
+                    html_respuesta += "</p>"
 
-            $("#informacion").html(info)            
+                    html_respuesta += "<p><strong>PVP: </strong>"+data.producto["PVP"] + "€</p>"
+                    html_respuesta += "<p><strong>Familia: </strong>"
+                    if (data2.mensaje) {
+                        html_respuesta += "No se encuentra ninguna"
+                    } else {
+                        html_respuesta += data2.familia["nombre"]
+                    }
+                    html_respuesta += "</p>"
+                    html_respuesta += "<p><button onclick='volver()'>Volver</button></p>"
+
+                    $("#respuestas").html(html_respuesta)
+
+                }
+                
+            }).fail(function(a,b){
+                $("#errores").html(error_ajax_jquery(a,b))
+                $("#principal").html("")
+            })
+
 
         }
+        
+    }).fail(function(a,b){
+
+        $("#errores").html(error_ajax_jquery(a,b))
+        $("#principal").html("")
     })
+}
+
+function montar_form_crear() {
+    $.ajax({        
+        url: DIR_SERV + "/familias",
+        dataType: "json",
+        type: "GET",
+
+    }).done(function(data){
+        if (data.mensaje_error) {
+            $("#errores").html(data.mensaje_error)
+            $("#principal").html("")
+        } else {
+            
+            // Si obtengo las familias monto el formulario
+            var html_form_crear = "<h2>Creando un producto</h2>"
+            html_form_crear += "<form onsubmit='event.preventDefault()'>"
+
+        }
+
+    }).fail(function(a,b){
+        $("#errores").html(error_ajax_jquery(a,b))
+        $("#principal").html("")
+    })
+}
+
+function volver(){
+    $("#respuestas").html("")
 }
 
 // Vamos a borrar el producto sobre el que se dé click
@@ -85,10 +207,3 @@ function borrar_producto(cod) {
         }
     })
 }
-
-$(document).ready(function () {
-    
-    // Nada más cargar la página quiero tener los productos
-    obtener_productos();
-
-});

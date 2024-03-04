@@ -83,6 +83,11 @@ $app->get("/familias", function(){
     echo json_encode(obtener_familias());
 });
 
+// Para el ejercicio 1 de ajax
+$app->get("/familia/{cod}", function($request){
+    echo json_encode(obtener_familia($request->getAttribute("cod")));
+});
+
 // g) Nos devuelve verdadero si ya existe el valor en una columna de una tabla (para los insertar)
 $app->get("/repetido/{tabla}/{columna}/{valor}", function($request){
     echo json_encode(repetido($request->getAttribute("tabla"), $request->getAttribute("columna"), $request->getAttribute("valor")));

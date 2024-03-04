@@ -27,6 +27,11 @@
             text-align: center;
         }
 
+        .centro{
+            width: 80%;
+            margin: 0 auto;
+        }
+
         .enlace{
             background: none;
             border: none;
@@ -38,28 +43,18 @@
         .seguridad{
             font-size: 1.25rem;
             color: blue;
-        }
-
-        #detallitos, #informacion, #mensaje{
-            width: 80%;
-            margin: 0 auto;
-        }
+        }        
 
     </style>
 </head>
 <body>
     <h1 class="centrado">Listado de los productos</h1>
-    <h3 id="detallitos">
-        
-    </h3>
-    <div id="informacion">
 
+    <div id="errores" class="centro"></div> <!-- Cuando haya un error, dejo vacío el principal y enseño este -->
+    <div id="principal" class="centro">
+        <div id="respuestas"></div>
+        <div id="productos"></div>
     </div>
-    <div id="mensaje">
 
-    </div>
-    <div id="respuesta">
-        
-    </div>
 </body>
 </html>

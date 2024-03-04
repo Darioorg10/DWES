@@ -185,6 +185,35 @@ function obtener_familias()
     return $respuesta;
 }
 
+function obtener_familia($codigo)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();        
+        return $respuesta;
+        // Esas dos se pueden hacer en una línea: return array("mensaje_error"=>"No se ha podido conectar a la base de datos: ".e->getMessage());
+    }
+
+    try{
+        $consulta="select * from familia where cod=?";
+        $sentencia=$conexion->prepare($consulta);
+        $sentencia->execute([$codigo]);
+    }
+    catch(PDOException $e)
+    {
+        $sentencia=null;
+        $conexion=null;
+        $respuesta["mensaje_error"] = "No se ha podido conectar a la base de datos: ".$e->getMessage();
+        return $respuesta;
+    }
+
+    $respuesta["familia"] = $sentencia->fetch(PDO::FETCH_ASSOC);
+    $sentencia = null;
+    $conexion = null;
+    return $respuesta;
+}
+
 // g)
 function repetido($tabla, $columna, $valor){
     try {
