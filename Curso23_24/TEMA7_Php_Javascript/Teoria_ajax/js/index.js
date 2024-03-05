@@ -1,7 +1,7 @@
 // Guardamos la api que vamos a utilizar
 const DIR_SERV = "http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Teoria_Servicios_Web(APIs)/primera_api/";
 
-function error_ajax_jquery( jqXHR, textStatus) 
+function error_ajax_jquery( jqXHR, textStatus)
 {
     var respuesta;
     if (jqXHR.status === 0) {
