@@ -79,6 +79,26 @@ $app->get("/usuariosGuardia/{dia}/{hora}", function($request){
     }
 });
 
+// f)
+$app->get("/deGuardia/{dia}/{hora}/{id_usuario}", function($request){
+
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+
+    $dia = $request->getAttribute("dia");
+    $hora = $request->getAttribute("hora");
+    $id_usuario = $request->getAttribute("id_usuario");
+
+    if (isset($_SESSION["usuario"])) {
+        echo json_encode(esta_de_guardia_dia_hora($dia, $hora, $id_usuario));
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "No tienes permisos para usar este servicio"));
+    }
+
+});
+
 
 // Una vez creado servicios los pongo a disposición
 $app->run();
