@@ -161,7 +161,7 @@
         $horas[6] = "6º Hora";
 
         // Guardamos los equipos en un array
-        for ($i=1; $i <= 30; $i++) { 
+        for ($i=1; $i <= 30; $i++) {
             $equipos[$i] = "Equipo ".$i;
         }        
 
