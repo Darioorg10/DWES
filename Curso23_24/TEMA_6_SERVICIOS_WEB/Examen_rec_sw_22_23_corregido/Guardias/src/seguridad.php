@@ -1,6 +1,4 @@
-<?php 
-
-    require_once "func_ctes.php";
+<?php     
 
     $url = DIR_SERV."/logueado";
     $datos["api_session"] = $_SESSION["api_session"];
@@ -13,24 +11,31 @@
     }
 
     if (isset($obj->error)) {
+        consumir_servicios_REST(DIR_SERV."/salir", "POST", $datos);
         session_destroy();
         die(error_page("Gestión de guardias", "Ha habido un error al consumir el servicio: ".$obj->error));
     }
 
     if (isset($obj->mensaje)) {
         session_unset();
+        consumir_servicios_REST(DIR_SERV."/salir", "POST", $datos);
         $_SESSION["seguridad"] = "El usuario ya no se encuentra registrado en la base de datos";
+        header("Location:index.php");
+        exit;
     }
 
     if (isset($obj->no_auth)) {
         session_unset();
         $_SESSION["seguridad"] = "No tienes permiso para acceder a este servicio";
+        header("Location:index.php");
+        exit;
     }
 
     $datos_usuario_log = $obj->usuario;
 
     if (time() - $_SESSION["ult_accion"] > MINUTOS*60) {
         session_unset();
+        consumir_servicios_REST(DIR_SERV."/salir", "POST", $datos);
         $_SESSION["seguridad"] = "El tiempo de sesión ha caducado";
         header("Location:index.php");
         exit;
@@ -39,3 +44,4 @@
     $_SESSION["ult_accion"] = time();
 
 ?>
+

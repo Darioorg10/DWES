@@ -51,6 +51,7 @@ function login($usuario, $clave){
         $sentencia->execute([$usuario, $clave]);
     } catch (PDOException $e) {
         $respuesta["error"]="No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
         $conexion = null;
         return $respuesta;
     }
@@ -87,6 +88,7 @@ function logueado($usuario, $clave){
         $sentencia->execute([$usuario, $clave]);
     } catch (PDOException $e) {
         $respuesta["error"]="No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
         $conexion = null;
         return $respuesta;
     }
@@ -118,6 +120,7 @@ function obtener_datos_usuario($id_usuario){
         $sentencia->execute([$id_usuario]);
     } catch (PDOException $e) {
         $respuesta["error"]="No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
         $conexion = null;
         return $respuesta;
     }
@@ -149,6 +152,7 @@ function obtener_usuarios_guardias_dia_hora($dia, $hora){
         $sentencia->execute([$dia, $hora]);
     } catch (PDOException $e) {
         $respuesta["error"]="No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
         $conexion = null;
         return $respuesta;
     }
@@ -178,15 +182,12 @@ function esta_de_guardia_dia_hora($dia, $hora, $id_usuario){
         $sentencia->execute([$dia, $hora, $id_usuario]);
     } catch (PDOException $e) {
         $respuesta["error"]="No se ha podido realizar la consulta:".$e->getMessage();
+        $sentencia = null;
         $conexion = null;
         return $respuesta;
     }
 
-    if ($sentencia->rowCount()>0) {
-        $respuesta["de_guardia"] = true;
-    } else {
-        $respuesta["de_guardia"] = false;
-    }
+    $respuesta["de_guardia"] = $sentencia->rowCount()>0; // Devuelve un true o false
 
     $sentencia = null;
     $conexion = null;
