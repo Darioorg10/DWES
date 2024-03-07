@@ -99,7 +99,6 @@
         for ($hora=1; $hora <= 7; $hora++) {
             echo "<tr><td>".$horas[$hora]."</td>";
 
-            // Cogemos los profesores que hay de guardia en el día de hoy y cada hora
             $url = DIR_SERV."/usuariosGuardia/".date("w")."/".$hora;
             $respuesta = consumir_servicios_REST($url, "GET", $datos);
             $obj = json_decode($respuesta);
