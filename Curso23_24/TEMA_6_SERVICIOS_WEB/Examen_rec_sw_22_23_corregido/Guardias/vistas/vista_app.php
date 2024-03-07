@@ -124,7 +124,7 @@
 
     <?php 
 
-        // Vamos a meter los datos de los días y horas en variables e imprimimos la tabla  
+        // Vamos a meter los datos de los días y horas en variables e imprimimos la tabla
         $dias[0] = "";
         $dias[1] = "Lunes";
         $dias[2] = "Martes";

@@ -70,7 +70,7 @@
 
     <?php
 
-        // Guardamos los días y las horas en un array        
+        // Guardamos los días y las horas en un array
         $dias[1] = "Lunes";
         $dias[2] = "Martes";
         $dias[3] = "Miércoles";
@@ -115,8 +115,7 @@
 
             if (isset($obj->no_auth)) {
                 session_unset();
-                $_SESSION["seguridad"] = "No tienes permisos para usar este servicio";
-                header("Location:index.php");
+                $_SESSION["seguridad"] = "No tienes permisos para usar este servicio";                
                 exit;
             }
 

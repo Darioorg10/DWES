@@ -79,6 +79,7 @@
 
     if (isset($_SESSION["alumno"])) {
         $_POST["alumno"] = $_SESSION["alumno"];
+        unset($_SESSION["alumno"]);
     }
 
     if (isset($_SESSION["cod_asig"])) {
@@ -275,7 +276,7 @@
             if (isset($_SESSION["mensaje_accion"])) {
                 echo "<p class='mensaje'>".$_SESSION["mensaje_accion"]."</p>";
                 unset($_SESSION["mensaje_accion"]);
-                unset($_POST["alumno"]);                
+                unset($_POST["alumno"]);
                 if (isset($_SESSION["cod_asig"])) {
                     unset($_SESSION["cod_asig"]);
                 }                
