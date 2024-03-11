@@ -1,7 +1,6 @@
-const DIR_SERV="http://localhost/Proyectos/Curso23_24/Servicios_Webs/Ejercicio1/servicios_rest";
+const DIR_SERV="http://localhost/Proyectos/DWES/Curso23_24/TEMA_6_SERVICIOS_WEB/Ejercicios_Servicios_Web/Ejercicio1/servicios_rest";
 
 $(document).ready(function(){
-
     obtener_productos();
 });
 
