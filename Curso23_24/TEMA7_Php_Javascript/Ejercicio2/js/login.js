@@ -9,7 +9,7 @@ $(document).ready(function(){
         {
             $.ajax({
                 url:"servicios_rest_key/logueado",
-                type:"GET",
+                type:"post",
                 dataType:"json",
                 data:{"api_session":localStorage.api_session}
             })
